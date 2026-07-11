@@ -1,553 +1,1620 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gentleman's Edge | 绥士理发馆</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;font-size:16px}
-body{font-family:'Inter',sans-serif;color:#e8e0d4;background:#1a1614;line-height:1.6;overflow-x:hidden}
-img{max-width:100%;display:block}
-a{text-decoration:none;color:inherit}
-ul{list-style:none}
-.container{max-width:1200px;margin:0 auto;padding:0 24px}
-::selection{background:#c8a45c;color:#1a1614}
-h1,h2,h3,h4{font-family:'Playfair Display',serif;font-weight:700;line-height:1.2}
-h1{font-size:clamp(2.8rem,8vw,5.5rem);letter-spacing:0.02em}
-h2{font-size:clamp(2rem,5vw,3.2rem);margin-bottom:1rem}
-h3{font-size:clamp(1.3rem,3vw,1.8rem)}
-.section-subtitle{font-size:0.85rem;text-transform:uppercase;letter-spacing:3px;color:#c8a45c;margin-bottom:0.5rem;font-weight:600}
-.btn{display:inline-block;padding:14px 36px;font-size:0.9rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;border:none;cursor:pointer;transition:all .3s;position:relative}
-.btn-primary{background:#c8a45c;color:#1a1614}
-.btn-primary:hover{background:#dbb86a;transform:translateY(-2px);box-shadow:0 8px 30px rgba(200,164,92,.3)}
-.btn-outline{background:transparent;border:2px solid #c8a45c;color:#c8a45c}
-.btn-outline:hover{background:#c8a45c;color:#1a1614;transform:translateY(-2px)}
-.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:20px 0;transition:all .4s}
-.nav.scrolled{background:rgba(26,22,20,.95);padding:12px 0;box-shadow:0 2px 30px rgba(0,0,0,.3);backdrop-filter:blur(12px)}
-.nav .container{display:flex;justify-content:space-between;align-items:center}
-.nav-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:#c8a45c;letter-spacing:1px}
-.nav-logo span{color:#e8e0d4}
-.nav-links{display:flex;gap:32px;align-items:center}
-.nav-links a{font-size:.8rem;font-weight:500;text-transform:uppercase;letter-spacing:1.5px;position:relative;padding:4px 0;transition:color .3s}
-.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:#c8a45c;transition:width .3s}
-.nav-links a:hover{color:#c8a45c}
-.nav-links a:hover::after{width:100%}
-.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
-.nav-toggle span{width:28px;height:2px;background:#e8e0d4;transition:all .3s;border-radius:2px}
-.nav-toggle.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.nav-toggle.active span:nth-child(2){opacity:0}
-.nav-toggle.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;background:#1a1614}
-.hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1585747861115-051b38d1e5f0?w=1920&q=80') center/cover no-repeat;opacity:.4;transform:scale(1.05);animation:heroZoom 20s ease infinite alternate}
-@keyframes heroZoom{0%{transform:scale(1.05)}to{transform:scale(1.15)}}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(26,22,20,.92) 0%,rgba(26,22,20,.6) 50%,rgba(26,22,20,.85) 100%)}
-.hero .container{position:relative;z-index:2;text-align:center}
-.hero h1{margin-bottom:.5rem;opacity:0;animation:fadeUp 1s .3s forwards}
-.hero h1 .accent{color:#c8a45c}
-.hero-tagline{font-size:clamp(1rem,2vw,1.25rem);color:#9a9086;margin-bottom:2.5rem;max-width:600px;margin-left:auto;margin-right:auto;opacity:0;animation:fadeUp 1s .6s forwards;font-weight:300}
-.hero-badges{display:flex;justify-content:center;gap:40px;margin-bottom:2.5rem;opacity:0;animation:fadeUp 1s .8s forwards}
-.hero-badge{text-align:center}
-.hero-badge .num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#c8a45c}
-.hero-badge .label{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;color:#9a9086;margin-top:2px}
-.hero .btn{opacity:0;animation:fadeUp 1s 1s forwards}
-.hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:2;color:#9a9086;font-size:.7rem;text-transform:uppercase;letter-spacing:2px;display:flex;flex-direction:column;align-items:center;gap:8px;animation:bounce 2s infinite}
-.hero-scroll .arrow{width:1px;height:30px;background:linear-gradient(to bottom,#9a9086,transparent)}
-@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-.section{padding:100px 0}
-.section-dark{background:#1a1614}
-.section-darker{background:#141110}
-.section-light{background:#1f1a17}
-.section-header{text-align:center;margin-bottom:60px}
-.section-header p{max-width:560px;margin:0 auto;color:#9a9086;font-size:1.05rem}
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
-.about-image{position:relative;border-radius:4px;overflow:hidden;aspect-ratio:4/3}
-.about-image img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
-.about-image:hover img{transform:scale(1.03)}
-.about-image::after{content:'';position:absolute;inset:0;border:1px solid rgba(200,164,92,.15);border-radius:4px;pointer-events:none}
-.about-content h2{margin-bottom:.5rem}
-.about-content .lead{font-size:1.1rem;color:#c8a45c;margin-bottom:1.5rem;font-weight:400;font-style:italic}
-.about-content p{color:#9a9086;margin-bottom:1.2rem;font-size:.95rem}
-.about-signature{font-family:'Playfair Display',serif;font-size:1.4rem;color:#c8a45c;margin-top:1.5rem;font-style:italic}
-.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.service-card{background:#1f1a17;padding:40px 32px;border:1px solid rgba(200,164,92,.08);transition:all .4s;position:relative;overflow:hidden}
-.service-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:#c8a45c;transition:height .4s}
-.service-card:hover::before{height:100%}
-.service-card:hover{transform:translateY(-4px);border-color:rgba(200,164,92,.2);box-shadow:0 12px 40px rgba(0,0,0,.3)}
-.service-icon{font-size:2.2rem;margin-bottom:1.2rem;color:#c8a45c}
-.service-card h3{margin-bottom:.8rem;font-size:1.3rem}
-.service-card p{color:#9a9086;font-size:.9rem;margin-bottom:1.2rem}
-.service-price{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:#c8a45c}
-.service-price small{font-size:.8rem;font-weight:400;color:#9a9086;font-family:'Inter',sans-serif}
-.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.gallery-item{position:relative;overflow:hidden;border-radius:3px;aspect-ratio:3/4;cursor:pointer}
-.gallery-item:nth-child(3){aspect-ratio:3/3;grid-column:span 2;grid-row:span 2}
-.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.gallery-item:hover img{transform:scale(1.08)}
-.gallery-item .overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,22,20,.7) 0%,transparent 60%);opacity:0;transition:opacity .4s;display:flex;align-items:flex-end;padding:20px}
-.gallery-item:hover .overlay{opacity:1}
-.gallery-item .overlay span{color:#e8e0d4;font-size:.85rem;font-weight:500}
-.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
-.team-card{text-align:center;padding:30px 20px;background:#1f1a17;border:1px solid rgba(200,164,92,.08);transition:all .4s}
-.team-card:hover{transform:translateY(-4px);border-color:rgba(200,164,92,.2);box-shadow:0 12px 40px rgba(0,0,0,.3)}
-.team-avatar{width:140px;height:140px;border-radius:50%;object-fit:cover;margin:0 auto 1.2rem;border:3px solid rgba(200,164,92,.2);transition:border-color .4s}
-.team-card:hover .team-avatar{border-color:#c8a45c}
-.team-card h3{font-size:1.2rem;margin-bottom:.3rem}
-.team-card .role{color:#c8a45c;font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.8rem}
-.team-card p{color:#9a9086;font-size:.88rem}
-.testimonials{background:linear-gradient(135deg,#1f1a17 0%,#141110 100%);position:relative}
-.testimonials::before{content:'"';position:absolute;top:40px;left:40px;font-family:'Playfair Display',serif;font-size:10rem;color:rgba(200,164,92,.06);line-height:1;pointer-events:none}
-.testimonial-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:30px}
-.testimonial-card{background:rgba(255,255,255,.03);padding:36px;border:1px solid rgba(200,164,92,.06);border-radius:4px}
-.testimonial-card .stars{color:#c8a45c;font-size:.9rem;margin-bottom:1rem;letter-spacing:2px}
-.testimonial-card blockquote{color:#b0a89e;font-size:.95rem;font-style:italic;line-height:1.7;margin-bottom:1.2rem}
-.testimonial-card .author{font-family:'Playfair Display',serif;color:#e8e0d4;font-size:1rem}
-.testimonial-card .author span{display:block;font-family:'Inter',sans-serif;font-size:.78rem;color:#9a9086;font-style:normal;margin-top:2px}
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px}
-.contact-info h3{font-size:1.6rem;margin-bottom:1.2rem}
-.contact-info p{color:#9a9086;margin-bottom:2rem;font-size:.95rem}
-.contact-detail{display:flex;gap:16px;margin-bottom:24px;align-items:flex-start}
-.contact-detail .icon{color:#c8a45c;font-size:1.2rem;min-width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(200,164,92,.15);border-radius:50%}
-.contact-detail .detail h4{font-size:.95rem;margin-bottom:2px}
-.contact-detail .detail span{color:#9a9086;font-size:.88rem}
-.contact-hours{margin-top:16px;padding-top:20px;border-top:1px solid rgba(200,164,92,.1)}
-.contact-hours h4{font-size:.95rem;margin-bottom:8px;color:#c8a45c}
-.contact-hours .hours-row{display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem;color:#9a9086}
-.contact-form{background:#1f1a17;padding:40px;border:1px solid rgba(200,164,92,.08);border-radius:4px}
-.contact-form h3{font-size:1.4rem;margin-bottom:1.5rem}
-.form-group{margin-bottom:18px}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:14px 16px;background:#141110;border:1px solid rgba(200,164,92,.12);color:#e8e0d4;font-family:'Inter',sans-serif;font-size:.9rem;border-radius:3px;transition:border-color .3s;outline:none}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#c8a45c}
-.form-group textarea{height:120px;resize:vertical}
-.form-group input::placeholder,.form-group textarea::placeholder{color:#6a625a}
-.form-group select option{background:#141110;color:#e8e0d4}
-.contact-form .btn{width:100%}
-.footer{background:#0e0c0a;padding:60px 0 30px}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
-.footer-brand .nav-logo{margin-bottom:1rem}
-.footer-brand p{color:#6a625a;font-size:.88rem;max-width:300px}
-.footer h4{font-size:.85rem;text-transform:uppercase;letter-spacing:1.5px;color:#c8a45c;margin-bottom:1rem}
-.footer-links li{margin-bottom:10px}
-.footer-links a{color:#6a625a;font-size:.88rem;transition:color .3s}
-.footer-links a:hover{color:#c8a45c}
-.footer-social{display:flex;gap:12px;margin-top:1rem}
-.footer-social a{width:40px;height:40px;border:1px solid rgba(200,164,92,.12);display:flex;align-items:center;justify-content:center;color:#6a625a;transition:all .3s;border-radius:50%;font-size:.9rem}
-.footer-social a:hover{color:#c8a45c;border-color:#c8a45c;transform:translateY(-2px)}
-.footer-bottom{border-top:1px solid rgba(200,164,92,.06);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:#6a625a}
-.reveal{opacity:0;transform:translateY(40px);transition:all .7s cubic-bezier(.25,.46,.45,.94)}
-.reveal.visible{opacity:1;transform:translateY(0)}
-.reveal-delay-1{transition-delay:.1s}
-.reveal-delay-2{transition-delay:.2s}
-.reveal-delay-3{transition-delay:.3s}
-@media(max-width:992px){
-  .about-grid,.contact-grid{grid-template-columns:1fr}
-  .services-grid{grid-template-columns:repeat(2,1fr)}
-  .gallery-grid{grid-template-columns:repeat(3,1fr)}
-  .gallery-item:nth-child(3){aspect-ratio:3/4;grid-column:auto;grid-row:auto}
-  .team-grid{grid-template-columns:repeat(2,1fr)}
-  .footer-grid{grid-template-columns:1fr 1fr;gap:30px}
-  .testimonial-grid{grid-template-columns:1fr}
-}
-@media(max-width:768px){
-  .nav-links{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:rgba(20,17,16,.98);flex-direction:column;padding:100px 40px 40px;gap:24px;transition:right .4s;backdrop-filter:blur(20px)}
-  .nav-links.open{right:0}
-  .nav-toggle{display:flex}
-  .services-grid{grid-template-columns:1fr}
-  .gallery-grid{grid-template-columns:repeat(2,1fr)}
-  .team-grid{grid-template-columns:1fr}
-  .hero-badges{flex-direction:column;gap:16px}
-  .contact-form{padding:28px 20px}
-  .section{padding:60px 0}
-  .footer-grid{grid-template-columns:1fr}
-  .footer-bottom{flex-direction:column;gap:8px;text-align:center}
-  .testimonials::before{display:none}
-}
-@media(max-width:480px){
-  .gallery-grid{grid-template-columns:1fr 1fr;gap:8px}
-  .gallery-item{aspect-ratio:1/1}
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>理发店经营助手 - v8 优化版</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', Arial, sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; }
 
-.service-cat{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600;background:rgba(200,164,92,.15);color:#c8a45c;text-transform:uppercase;letter-spacing:.5px}
-.team-date{color:#6a625a;font-size:.82rem;margin-top:6px;padding-top:6px;border-top:1px solid rgba(200,164,92,.08)}
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .header h1 { font-size: 2em; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .header p { margin-top: 5px; opacity: 0.9; }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .save-status { font-size: 0.9em; opacity: 0.9; }
 
-.membership-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
-.membership-card{background:#1f1a17;padding:40px 30px;border:1px solid rgba(200,164,92,.08);text-align:center;transition:all .4s}
-.membership-card:hover{transform:translateY(-4px);border-color:rgba(200,164,92,.2);box-shadow:0 12px 40px rgba(0,0,0,.3)}
-.mem-icon{font-size:2.8rem;margin-bottom:1rem}
-.membership-card h3{font-size:1.3rem;margin-bottom:.8rem}
-.membership-card p{color:#9a9086;font-size:.9rem;margin-bottom:1.2rem;line-height:1.6}
-.mem-features{text-align:left}
-.mem-feature{color:#b0a89e;font-size:.85rem;padding:5px 0;border-bottom:1px solid rgba(200,164,92,.06)}
-.mem-feature:last-child{border-bottom:none}
-@media(max-width:992px){.membership-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.membership-grid{grid-template-columns:1fr}}
-</style>
+        .tabs { display: flex; flex-wrap: wrap; background: #16213e; padding: 10px; gap: 8px; justify-content: center; }
+        .tab-btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; font-weight: 600; transition: all 0.3s; background: #0f3460; color: #eee; }
+        .tab-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
+        .tab-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+
+        .toolbar { background: #16213e; padding: 10px 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .toolbar .btn { padding: 8px 16px; font-size: 0.9em; }
+        .undo-btn { background: #3498db; }
+        .redo-btn { background: #9b59b6; }
+        .backup-btn { background: #27ae60; }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background: #16213e; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .card h2 { color: #667eea; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #667eea; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 12px; text-align: center; }
+        .stat-card h3 { font-size: 0.9em; opacity: 0.9; }
+        .stat-card .value { font-size: 2em; font-weight: bold; margin-top: 5px; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #aaa; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #0f3460; border-radius: 8px; background: #1a1a2e; color: #eee; font-size: 1em; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #667eea; }
+
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; font-weight: 600; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
+        .btn-danger { background: #e74c3c; color: #fff; }
+        .btn-danger:hover { background: #c0392b; }
+        .btn-success { background: #27ae60; color: #fff; }
+        .btn-success:hover { background: #219a52; }
+        .btn-warning { background: #f39c12; color: #fff; }
+        .btn-sm { padding: 8px 16px; font-size: 0.9em; }
+
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #0f3460; }
+        th { background: #0f3460; color: #667eea; font-weight: 600; }
+        tr:hover { background: rgba(102, 126, 234, 0.1); }
+
+        .search-box { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .search-box input { flex: 1; min-width: 200px; }
+
+        .tag { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; margin: 2px; }
+        .tag-vip { background: #f39c12; color: #fff; }
+        .tag-normal { background: #3498db; color: #fff; }
+        .tag-success { background: #27ae60; color: #fff; }
+        .tag-warning { background: #f39c12; color: #fff; }
+        .tag-danger { background: #e74c3c; color: #fff; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #16213e; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s ease; position: relative; }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h3 { color: #667eea; }
+        .modal-close { background: none; border: none; color: #aaa; font-size: 1.5em; cursor: pointer; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s; }
+        .modal-close:hover { color: #fff; background: rgba(255,255,255,0.1); }
+        .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+        .toast { position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 8px; z-index: 2000; animation: toastIn 0.3s ease; }
+        .toast-success { background: #27ae60; color: #fff; }
+        .toast-error { background: #e74c3c; color: #fff; }
+        .toast-info { background: #3498db; color: #fff; }
+        @keyframes toastIn { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+
+        .empty-state { text-align: center; padding: 40px; color: #aaa; }
+
+        /* 登录页面样式 */
+        .login-screen { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
+        .login-box { background: #16213e; padding: 40px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); width: 100%; max-width: 400px; text-align: center; }
+        .login-box h2 { color: #667eea; margin-bottom: 30px; font-size: 1.8em; }
+        .login-box .form-group { text-align: left; }
+        .login-box .btn { width: 100%; margin-top: 10px; }
+        .login-avatar { font-size: 4em; margin-bottom: 20px; }
+        .login-error { color: #e74c3c; margin-top: 10px; font-size: 0.9em; }
+
+        :root { --brand: #4f46e5; --brand-deep: #312e81; --surface: #ffffff; --canvas: #f6f7fb; --ink: #172033; --muted: #6b7280; --line: #e7e9f2; --success: #0f9f6e; --warning: #d97706; --danger: #dc4b5a; }
+        body { background: var(--canvas); color: var(--ink); line-height: 1.5; }
+        .header { background: radial-gradient(circle at 12% 5%, rgba(255,255,255,.2), transparent 23%), linear-gradient(120deg, #312e81, #4f46e5 57%, #0ea5a0); padding: 22px 32px; box-shadow: 0 6px 28px rgba(49,46,129,.2); }
+        .header h1 { font-size: 1.65rem; letter-spacing: -.02em; }
+        .header p { font-size: .9rem; }
+        .tabs { position: sticky; top: 0; z-index: 50; justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding: 10px max(20px, calc((100% - 1400px) / 2)); background: rgba(255,255,255,.94); border-bottom: 1px solid var(--line); box-shadow: 0 4px 14px rgba(31,41,55,.05); backdrop-filter: blur(14px); }
+        .tab-btn { flex: 0 0 auto; padding: 10px 15px; border-radius: 9px; background: transparent; color: #586174; font-size: .9rem; }
+        .tab-btn:hover { color: var(--brand); background: #eef2ff; box-shadow: none; transform: none; }
+        .tab-btn.active { color: #fff; background: var(--brand); box-shadow: 0 5px 14px rgba(79,70,229,.24); }
+        .toolbar { justify-content: flex-end; background: #fff; border-bottom: 1px solid var(--line); padding: 8px max(20px, calc((100% - 1400px) / 2)); }
+        .toolbar .btn { padding: 7px 12px; border-radius: 7px; }
+        .container { padding: 26px 20px 46px; }
+        .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; box-shadow: 0 8px 24px rgba(31,41,55,.045); }
+        .card h2 { color: var(--ink); border-bottom: 1px solid var(--line); font-size: 1.08rem; }
+        .stats-grid { gap: 16px; }
+        .stat-card { position: relative; overflow: hidden; padding: 21px; text-align: left; color: var(--ink); background: #fff; border: 1px solid var(--line); box-shadow: 0 8px 18px rgba(31,41,55,.04); }
+        .stat-card::after { content: ''; position: absolute; width: 62px; height: 62px; right: -18px; top: -18px; border-radius: 50%; background: #e0e7ff; }
+        .stat-card h3 { color: var(--muted); opacity: 1; font-weight: 600; }
+        .stat-card .value { color: var(--ink); font-size: 1.8rem; }
+        .stat-card:nth-child(2)::after { background: #d1fae5; }
+        .stat-card:nth-child(3)::after { background: #fef3c7; }
+        .stat-card:nth-child(4)::after { background: #fee2e2; }
+        .form-group label { color: #4b5563; font-weight: 600; font-size: .9rem; }
+        .form-group input, .form-group select, .form-group textarea, .search-box input { border-color: #d9ddea; background: #fff; color: var(--ink); padding: 11px 12px; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus, .search-box input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(79,70,229,.12); }
+        .btn { border-radius: 9px; }
+        .btn-primary { background: var(--brand); }
+        .btn-primary:hover { background: var(--brand-deep); box-shadow: 0 6px 16px rgba(79,70,229,.25); }
+        .btn-success { background: var(--success); }
+        .btn-danger { background: var(--danger); }
+        th, td { border-bottom-color: var(--line); }
+        th { background: #f8f9fd; color: #667085; font-size: .8rem; letter-spacing: .02em; text-transform: uppercase; }
+        tr:hover { background: #f8faff; }
+        .tag { font-weight: 700; }
+        .modal { background: rgba(19,27,46,.52); backdrop-filter: blur(3px); }
+        .modal-content { background: #fff; color: var(--ink); border-radius: 16px; box-shadow: 0 20px 60px rgba(15,23,42,.25); }
+        .modal-header h3 { color: var(--ink); }
+        .modal-close { color: #667085; }
+        .modal-close:hover { color: var(--ink); background: #f1f3f9; }
+        .empty-state { color: var(--muted); }
+        .dashboard-hero { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 25px; margin-bottom: 18px; color: #fff; background: linear-gradient(125deg, #312e81, #4f46e5 63%, #0f9f9a); border-radius: 18px; box-shadow: 0 12px 26px rgba(79,70,229,.2); }
+        .dashboard-hero h2 { margin: 0 0 5px; padding: 0; color: #fff; border: 0; font-size: 1.45rem; }
+        .dashboard-hero p { opacity: .86; }
+        .quick-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+        .quick-actions .btn { background: #fff; color: var(--brand-deep); box-shadow: 0 4px 13px rgba(19,27,46,.15); }
+        .quick-actions .btn:hover { transform: translateY(-1px); }
+        .dashboard-panels { display: grid; grid-template-columns: 1.25fr .75fr; gap: 18px; }
+        .compact-list { display: grid; gap: 10px; }
+        .compact-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+        .compact-item:last-child { border-bottom: 0; }
+        .compact-item strong { display: block; color: var(--ink); }
+        .compact-item small { color: var(--muted); }
+        .appointment-time { min-width: 54px; color: var(--brand); font-size: 1.05rem; font-weight: 800; }
+        .page-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px; }
+        .page-head h2 { margin: 0; padding: 0; border: 0; }
+        .search-box { align-items: center; margin-bottom: 12px; }
+        .search-box select { min-width: 132px; padding: 11px 12px; color: var(--ink); border: 1px solid #d9ddea; border-radius: 8px; background: #fff; }
+        .hint { color: var(--muted); font-size: .86rem; }
+        .payment-summary { padding: 14px; border-radius: 10px; background: #f5f7ff; color: #3f3b8f; font-weight: 700; }
+        .low-stock { color: var(--danger); font-weight: 700; }
+        @media (max-width: 768px) { .header { padding: 18px 20px; } .header-bar { align-items: flex-start; } .header h1 { font-size: 1.35rem; } .toolbar { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; } .dashboard-hero { align-items: flex-start; flex-direction: column; } .dashboard-panels { grid-template-columns: 1fr; } .page-head { align-items: flex-start; flex-direction: column; } .tab-btn { padding: 9px 13px; } .card { padding: 16px; } .modal-content { padding: 22px; } }
+    </style>
 </head>
 <body>
+    <!-- 登录页面 -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="login-avatar">🏠</div>
+            <h2>理发店管理系统</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" id="loginUsername" placeholder="请输入用户名" required>
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" id="loginPassword" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="btn btn-primary">登录</button>
+                <button type="button" class="btn btn-success" onclick="SalonApp.showRegister()" style="margin-top:10px;">注册新账户</button>
+            </form>
+            <p class="login-error" id="loginError"></p>
+        </div>
+    </div>
 
-<nav class="nav" id="navbar">
-  <div class="container">
-    <a href="#" class="nav-logo">Gentleman's <span>Edge</span></a>
-    <div class="nav-links" id="navLinks">
-      <a href="#about">关于我们</a>
-      <a href="#services">服务</a>
-      <a href="#gallery">作品</a>
-      <a href="#team">团队</a>
-      <a href="#contact">预约</a>
+    <!-- 注册模态框 -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>注册新账户</h3>
+                <button type="button" class="modal-close" onclick="SalonApp.closeRegister()">×</button>
+            </div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" id="regUsername" placeholder="设置用户名" required>
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" id="regPassword" placeholder="设置密码" required>
+                </div>
+                <div class="form-group">
+                    <label>确认密码</label>
+                    <input type="password" id="regPassword2" placeholder="确认密码" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="SalonApp.closeRegister()">取消</button>
+                    <button type="submit" class="btn btn-primary">注册</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <button class="nav-toggle" id="navToggle" aria-label="菜单">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav><!-- HERO -->
-<section class="hero" id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-overlay"></div>
-  <div class="container">
-    <h1 lang="en"><span class="accent">Gentleman's</span> Edge</h1>
-    <p class="hero-tagline">经典手艺 · 现代审美 —— 每一位绥士都值得被认真对待</p>
-    <div class="hero-badges">
-      <div class="hero-badge"><div class="num">15+</div><div class="label">年经验</div></div>
-      <div class="hero-badge"><div class="num">5000+</div><div class="label">满意客户</div></div>
-      <div class="hero-badge"><div class="num">100%</div><div class="label">手工精剪</div></div>
-    </div>
-    <a href="#contact" class="btn btn-primary">立即预约</a>
-  </div>
-  <div class="hero-scroll">
-    <span>向下滚动</span>
-    <div class="arrow"></div>
-  </div>
-</section>
 
-<section class="section section-dark" id="about">
-  <div class="container">
-    <div class="about-grid">
-      <div class="about-image reveal">
-        <img src="https://images.unsplash.com/photo-1599351431202-1e0f0139f4e0?w=800&q=80" alt="理发工具" loading="lazy">
-      </div>
-      <div class="about-content reveal reveal-delay-1">
-        <div class="section-subtitle">Our Story</div>
-        <h2>传统手艺<br>现代演绎</h2>
-        <p class="lead">"每一次落剪，都是对细节的尊重。"</p>
-        <p>Gentleman's Edge 创立于 2010 年，我们坚信理发不仅是手艺，更是一种仪式感。从经典油头到现代渐变，我们用传统工具结合当代审美，为每一位客人打造专属风格。</p>
-        <p>在我们的店里，没有流水线的速剪，只有一杯威士忌、一首爵士乐，和一把传承了半个世纪的剪刀。我们只做一件事，并把它做到极致。</p>
-        <div class="about-signature">— 陈师傅 &amp; 团队</div>
-      </div>
-    </div>
-  </div>
-</section>
+    <!-- 主应用（登录后显示） -->
+    <div id="mainApp" style="display:none;">
+        <div class="header">
+            <div class="header-bar">
+                <div>
+                    <h1 id="appTitle">✂️ 我的理发店</h1>
+                    <p>离线经营助手 · 数据仅保存在当前浏览器</p>
+                </div>
+                <div>
+                    <span class="save-status" id="saveStatus">✅ 已保存</span>
+                    <button class="btn btn-sm btn-danger" onclick="SalonApp.logout()" style="margin-left:15px;">退出登录</button>
+                </div>
+            </div>
+        </div>
 
-<section class="section section-darker" id="services">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-subtitle">Services &amp; Pricing</div>
-      <h2>精选服务</h2>
-      <p>每一项服务都经过精心设计，价格透明，品质如一</p>
-    </div>
-    <div class="services-grid">
-      <div class="service-card reveal reveal-delay-1">
-        <div class="service-icon">✂️</div>
-        <h3>经典理发</h3>
-        <p>专业精剪 + 造型，适合日常通勤与商务场合</p>
-        <div class="service-price">¥168 <small>/ 次</small></div>
-      </div>
-      <div class="service-card reveal reveal-delay-2">
-        <div class="service-icon">U0001f488</div>
-        <h3>油头造型</h3>
-        <p>传统 pompadour / slick back，复古经典风格重塑</p>
-        <div class="service-price">¥228 <small>/ 次</small></div>
-      </div>
-      <div class="service-card reveal reveal-delay-3">
-        <div class="service-icon">U0001f9d4</div>
-        <h3>胡须护理</h3>
-        <p>热毛巾敷面 + 精准修型 + 须后护理</p>
-        <div class="service-price">¥128 <small>/ 次</small></div>
-      </div>
-      <div class="service-card reveal reveal-delay-1">
-        <div class="service-icon">✨</div>
-        <h3>渐变精剪</h3>
-        <p>Skin fade / Mid fade / High fade，过渡自然无痕</p>
-        <div class="service-price">¥198 <small>/ 次</small></div>
-      </div>
-      <div class="service-card reveal reveal-delay-2">
-        <div class="service-icon">U0001f451</div>
-        <h3>尊享全套</h3>
-        <p>理发 + 胡须 + 面部护理 + 头部按摩，90分钟极致体验</p>
-        <div class="service-price">¥388 <small>/ 次</small></div>
-      </div>
-      <div class="service-card reveal reveal-delay-3">
-        <div class="service-icon">U0001f9d2</div>
-        <h3>儿童理发</h3>
-        <p>12岁以下儿童专属理发，耐心细致，氛围轻松</p>
-        <div class="service-price">¥98 <small>/ 次</small></div>
-      </div>
-    </div>
-  </div>
-</section>
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="dashboard">📊 工作台</button>
+            <button class="tab-btn" data-tab="appointments">🗓 预约</button>
+            <button class="tab-btn" data-tab="members">👥 会员管理</button>
+            <button class="tab-btn" data-tab="services">✂️ 服务项目</button>
+            <button class="tab-btn" data-tab="consumption">💰 收银记录</button>
+            <button class="tab-btn" data-tab="inventory">📦 库存管理</button>
+            <button class="tab-btn" data-tab="staff">👔 员工管理</button>
+            <button class="tab-btn" data-tab="statistics">📈 统计分析</button>
+            <button class="tab-btn" data-tab="settings">⚙️ 系统设置</button>
+        </nav>
 
-<section class="section section-light" id="gallery">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-subtitle">Our Works</div>
-      <h2>作品展示</h2>
-      <p>每一张照片背后，都是一次用心的创作</p>
-    </div>
-    <div class="gallery-grid">
-      <div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1567894340315-735d7c361db7?w=600&q=80" alt="男士理发" loading="lazy"><div class="overlay"><span>渐变精剪</span></div></div>
-      <div class="gallery-item reveal reveal-delay-1"><img src="https://images.unsplash.com/photo-1621605815971-fbc98d665666?w=600&q=80" alt="理发造型" loading="lazy"><div class="overlay"><span>经典油头</span></div></div>
-      <div class="gallery-item reveal reveal-delay-2"><img src="https://images.unsplash.com/photo-1596728325488-58c87691e9af?w=800&q=80" alt="理发店内部" loading="lazy"><div class="overlay"><span>店内环境</span></div></div>
-      <div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1634302085916-2431c1fe0d8a?w=600&q=80" alt="胡须造型" loading="lazy"><div class="overlay"><span>胡须造型</span></div></div>
-      <div class="gallery-item reveal reveal-delay-1"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&q=80" alt="理发工具" loading="lazy"><div class="overlay"><span>经典工具</span></div></div>
-      <div class="gallery-item reveal reveal-delay-2"><img src="https://images.unsplash.com/photo-1596728325488-58c87691e9af?w=800&q=80" alt="理发过程" loading="lazy"><div class="overlay"><span>精剪时刻</span></div></div>
-      <div class="gallery-item reveal reveal-delay-3"><img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&q=80" alt="男士发型" loading="lazy"><div class="overlay"><span>时尚渐变</span></div></div>
-    </div>
-  </div>
-</section>
+        <div class="toolbar">
+            <button class="btn undo-btn" id="undoBtn" onclick="SalonApp.undo()">↩️ 撤销</button>
+            <button class="btn redo-btn" id="redoBtn" onclick="SalonApp.redo()" disabled>↪️ 重做</button>
+            <button class="btn backup-btn" onclick="SalonApp.createBackup()">💾 手动备份</button>
+            <span style="color: #aaa; font-size: 0.9em;">操作历史: <span id="historyCount">0</span></span>
+        </div>
 
-<section class="section testimonials" id="testimonials">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-subtitle">Testimonials</div>
-      <h2>客人的声音</h2>
-    </div>
-    <div class="testimonial-grid">
-      <div class="testimonial-card reveal">
-        <div class="stars">★★★★★</div>
-        <blockquote>"在 Gentleman's Edge 理发是一种享受。从进门的那杯威士忌到最后一剪，每个细节都无可挑剔。渐变过渡太自然了，朋友都问我哪里剪的。"</blockquote>
-        <div class="author">张先生 <span>常客 · 3年</span></div>
-      </div>
-      <div class="testimonial-card reveal reveal-delay-1">
-        <div class="stars">★★★★★</div>
-        <blockquote>"第一次体验油头造型就被圈粉了。老师傅的手艺真是没话说，复古感和时尚感拿捏得恰到好处。已经推荐给全公司同事了。"</blockquote>
-        <div class="author">李先生 <span>新客户 · 2024</span></div>
-      </div>
-      <div class="testimonial-card reveal reveal-delay-2">
-        <div class="stars">★★★★★</div>
-        <blockquote>"带孩子来剪头发，师傅特别有耐心，小朋友居然全程没闹。剪完效果也很棒，以后就认准这家了。"</blockquote>
-        <div class="author">王女士 <span>客户家长</span></div>
-      </div>
-      <div class="testimonial-card reveal reveal-delay-3">
-        <div class="stars">★★★★★</div>
-        <blockquote>"每隔三周必来报道。胡须护理配合理发简直是男生的spa体验。环境好、服务好、技术更好。"</blockquote>
-        <div class="author">刘先生 <span>会员 · 金卡</span></div>
-      </div>
-    </div>
-  </div>
-</section>
+        <main class="container">
+            <div id="dashboard" class="tab-content active">
+                <section class="dashboard-hero">
+                    <div>
+                        <h2 id="dashboardGreeting">今天，把门店经营得更从容</h2>
+                        <p id="dashboardDate">加载中…</p>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="btn" onclick="SalonApp.openCheckout()">+ 快速收银</button>
+                        <button class="btn" onclick="SalonApp.openAppointment()">+ 新建预约</button>
+                        <button class="btn" onclick="SalonApp.openMember()">+ 添加会员</button>
+                    </div>
+                </section>
+                <div class="stats-grid" id="statsGrid"></div>
+                <div class="dashboard-panels">
+                    <div class="card">
+                        <div class="page-head"><h2>📅 今日预约</h2><button class="btn btn-sm btn-primary" onclick="SalonApp.switchTab('appointments')">查看全部</button></div>
+                        <div class="compact-list" id="todayAppointments"></div>
+                    </div>
+                    <div class="card">
+                        <div class="page-head"><h2>⚠️ 经营提醒</h2><span class="hint">及时处理更安心</span></div>
+                        <div class="compact-list" id="businessAlerts"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>🧾 最近收银</h2>
+                    <div class="table-wrapper">
+                        <table id="recentTable"><thead><tr><th>时间</th><th>顾客</th><th>项目</th><th>支付方式</th><th>实收金额</th></tr></thead><tbody></tbody></table>
+                    </div>
+                </div>
+            </div>
 
+            <div id="appointments" class="tab-content">
+                <div class="card">
+                    <div class="page-head"><div><h2>🗓 预约管理</h2><p class="hint">让到店安排一目了然</p></div><button class="btn btn-primary" id="addAppointmentBtn">+ 新建预约</button></div>
+                    <div class="search-box">
+                        <input type="text" id="appointmentSearch" placeholder="搜索顾客、电话、服务或员工…">
+                        <select id="appointmentStatus"><option value="">全部状态</option><option value="已预约">已预约</option><option value="已到店">已到店</option><option value="已完成">已完成</option><option value="已取消">已取消</option></select>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="appointmentTable"><thead><tr><th>到店时间</th><th>顾客</th><th>服务</th><th>服务人员</th><th>状态</th><th>操作</th></tr></thead><tbody></tbody></table>
+                    </div>
+                </div>
+            </div>
 
-<!-- ============ MEMBERSHIP ============ -->
-<section class="section section-darker" id="membership">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-subtitle">Membership</div>
-      <h2>会员权益</h2>
-      <p>加入我们，享受更多专属礼遇</p>
-    </div>
-    <div class="membership-grid">
-      <div class="membership-card reveal">
-        <div class="mem-icon">U0001f4b0</div>
-        <h3>储值有礼</h3>
-        <p>充值 500 送 50，充值 1000 送 150，多充多送，余额永久有效</p>
-        <div class="mem-features">
-          <div class="mem-feature">✓ 余额全家通用</div>
-          <div class="mem-feature">✓ 生日当月双倍积分</div>
-        </div>
-      </div>
-      <div class="membership-card reveal reveal-delay-1">
-        <div class="mem-icon">U0001f3c6</div>
-        <h3>VIP 会员</h3>
-        <p>年费 VIP 会员享全年理发 8 折优惠，专属预约通道，定期到店免排队</p>
-        <div class="mem-features">
-          <div class="mem-feature">✓ 全年 8 折优惠</div>
-          <div class="mem-feature">✓ 优先预约免等待</div>
-        </div>
-      </div>
-      <div class="membership-card reveal reveal-delay-2">
-        <div class="mem-icon">U0001f31f</div>
-        <h3>积分计划</h3>
-        <p>每消费 1 元积 1 分，积分可兑换服务或产品，积分不设有效期</p>
-        <div class="mem-features">
-          <div class="mem-feature">✓ 积分兑换服务</div>
-          <div class="mem-feature">✓ 累计升级享更多</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+            <div id="members" class="tab-content">
+                <div class="card">
+                    <h2>👥 会员管理</h2>
+                    <div class="search-box">
+                        <input type="text" id="memberSearch" placeholder="搜索会员姓名或手机号...">
+                        <button class="btn btn-primary" id="addMemberBtn">+ 添加会员</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="memberTable"><thead><tr><th>卡号</th><th>姓名</th><th>手机</th><th>等级</th><th>余额</th><th>积分</th><th>操作</th></tr></thead><tbody></tbody></table>
+                    </div>
+                </div>
+            </div>
 
-<section class="section section-light" id="team">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-subtitle">Our Team</div>
-      <h2>专业团队</h2>
-      <p>每一位理发师都是经过严格筛选的手艺人</p>
-    </div>
-    <div class="team-grid">
-      <div class="team-card reveal">
-        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80" alt="陈师傅" class="team-avatar" loading="lazy">
-        <h3>陈志强</h3>
-        <div class="role">创始人 / 首席理发师</div>
-        <p>15年从业经验，师从日本名师山本孝之，精通经典油头与渐变技术。</p><div class="team-date">入职：2015年</div>
-      </div>
-      <div class="team-card reveal reveal-delay-1">
-        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80" alt="李师傅" class="team-avatar" loading="lazy">
-        <h3>李明远</h3>
-        <div class="role">高级理发师</div>
-        <p>10年经验，擅长现代渐变设计与胡须造型，风格偏年轻时尚。</p><div class="team-date">入职：2018年</div>
-      </div>
-      <div class="team-card reveal reveal-delay-2">
-        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80" alt="王师傅" class="team-avatar" loading="lazy">
-        <h3>王浩</h3>
-        <div class="role">资深理发师</div>
-        <p>8年经验，专注经典理发与儿童理发，以耐心细致著称。</p><div class="team-date">入职：2020年</div>
-      </div>
-    </div>
-  </div>
-</section>
+            <div id="services" class="tab-content">
+                <div class="card">
+                    <h2>✂️ 服务项目管理</h2>
+                    <div class="search-box">
+                        <input type="text" id="serviceSearch" placeholder="搜索服务项目...">
+                        <button class="btn btn-primary" id="addServiceBtn">+ 添加服务</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="serviceTable"><thead><tr><th>编号</th><th>名称</th><th>价格</th><th>成本</th><th>分类</th><th>操作</th></tr></thead><tbody></tbody></table>
+                    </div>
+                </div>
+            </div>
 
-<section class="section section-darker" id="contact">
-  <div class="container">
-    <div class="section-header reveal">
-      <div class="section-subtitle">Book Now</div>
-      <h2>预约体验</h2>
-      <p>预约优先，也可接受 walk-in。我们期待您的到来</p>
-    </div>
-    <div class="contact-grid">
-      <div class="contact-info reveal">
-        <h3>联系我们</h3>
-        <p>无论您是老客人还是第一次来，我们都欢迎。留下信息，我们会尽快与您确认。</p>
-        <div class="contact-detail">
-          <i class="icon">U0001f4cd</i>
-          <div class="detail">
-            <h4>地址</h4>
-            <span>上海市静安区南京西路1788号<br>1788广场 B1-12</span>
-          </div>
-        </div>
-        <div class="contact-detail">
-          <i class="icon">U0001f4de</i>
-          <div class="detail">
-            <h4>电话</h4>
-            <span>021-6288 8888</span>
-          </div>
-        </div>
-        <div class="contact-detail">
-          <i class="icon">✉️</i>
-          <div class="detail">
-            <h4>邮箱</h4>
-            <span>hello@gentlemansedge.cn</span>
-          </div>
-        </div>
-        <div class="contact-hours">
-          <h4>营业时间</h4>
-          <div class="hours-row"><span>周一 — 周五</span><span>10:00 — 21:00</span></div>
-          <div class="hours-row"><span>周六 — 周日</span><span>09:00 — 22:00</span></div>
-          <div class="hours-row" style="color:#c8a45c"><span>法定节假日</span><span>10:00 — 18:00</span></div>
-        </div>
-      </div>
-      <form class="contact-form reveal reveal-delay-1" id="bookingForm">
-        <h3>在线预约</h3>
-        <div class="form-group">
-          <input type="text" placeholder="您的姓名" required>
-        </div>
-        <div class="form-group">
-          <input type="tel" placeholder="手机号码" required>
-        </div>
-        <div class="form-group">
-          <select required>
-            <option value="">选择服务</option>
-            <option>经典理发 ¥168</option>
-            <option>油头造型 ¥228</option>
-            <option>胡须护理 ¥128</option>
-            <option>渐变精剪 ¥198</option>
-            <option>尊享全套 ¥388</option>
-            <option>儿童理发 ¥98</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <select>
-            <option value="">指定理发师（可选）</option>
-            <option>陈志强（首席）</option>
-            <option>李明远（高级）</option>
-            <option>王浩（资深）</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <input type="date" required>
-        </div>
-        <div class="form-group">
-          <input type="time" required>
-        </div>
-        <div class="form-group">
-          <textarea placeholder="备注（如：特殊需求、到店前确认等）"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">提交预约</button>
-      </form>
-    </div>
-  </div>
-</section>
+            <div id="consumption" class="tab-content">
+                <div class="card">
+                    <h2>💰 消费记录</h2>
+                    <div class="search-box">
+                        <input type="text" id="consumptionSearch" placeholder="搜索会员姓名...">
+                        <button class="btn btn-primary" id="addConsumptionBtn">+ 消费</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="consumptionTable"><thead><tr><th>时间</th><th>顾客</th><th>项目</th><th>支付方式 / 服务人员</th><th>实收金额</th><th>操作</th></tr></thead><tbody></tbody></table>
+                    </div>
+                </div>
+            </div>
 
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="nav-logo">Gentleman's <span>Edge</span></div>
-        <p>经典手艺与现代审美的完美融合。每一位绥士都值得被认真对待。</p>
-        <div class="footer-social">
-          <a href="#" aria-label="微信">U0001f4ac</a>
-          <a href="#" aria-label="小红书">U0001f4d5</a>
-          <a href="#" aria-label="大众点评">⭐</a>
-          <a href="#" aria-label="抖音">U0001f3b5</a>
-        </div>
-      </div>
-      <div>
-        <h4>快捷链接</h4>
-        <ul class="footer-links">
-          <li><a href="#about">关于我们</a></li>
-          <li><a href="#services">服务项目</a></li>
-          <li><a href="#gallery">作品展示</a></li>
-          <li><a href="#team">我们的团队</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>服务项目</h4>
-        <ul class="footer-links">
-          <li><a href="#services">经典理发</a></li>
-          <li><a href="#services">油头造型</a></li>
-          <li><a href="#services">胡须护理</a></li>
-          <li><a href="#services">尊享全套</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>营业时间</h4>
-        <ul class="footer-links" style="font-size:0.88rem;color:#6a625a">
-          <li>周一至周五 10:00-21:00</li>
-          <li>周末 09:00-22:00</li>
-          <li>节假日 10:00-18:00</li>
-          <li style="margin-top:8px"><a href="#contact">立即预约 →</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>&copy; 2026 Gentleman's Edge. All rights reserved.</span>
-      <span>Designed with ✂️ in Shanghai</span>
-    </div>
-  </div>
-</footer>
+            <div id="inventory" class="tab-content">
+                <div class="card">
+                    <h2>📦 库存管理</h2>
+                    <div class="search-box">
+                        <input type="text" id="inventorySearch" placeholder="搜索商品名称...">
+                        <button class="btn btn-primary" id="addInventoryBtn">+ 添加商品</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="inventoryTable"><thead><tr><th>编号</th><th>名称</th><th>库存</th><th>进价</th><th>售价</th><th>状态</th><th>操作</th></tr></thead><tbody></tbody></table>
+                    </div>
+                </div>
+            </div>
 
-<script>
-const navbar=document.getElementById("navbar");
-window.addEventListener("scroll",()=>{window.pageYOffset>60?navbar.classList.add("scrolled"):navbar.classList.remove("scrolled")});
-const navToggle=document.getElementById("navToggle"),navLinks=document.getElementById("navLinks");
-navToggle.addEventListener("click",()=>{navToggle.classList.toggle("active"),navLinks.classList.toggle("open")});
-navLinks.querySelectorAll("a").forEach(l=>l.addEventListener("click",()=>{navToggle.classList.remove("active"),navLinks.classList.remove("open")}));
-const ro=new IntersectionObserver(e=>{e.forEach(e=>{e.isIntersecting&&(e.target.classList.add("visible"),ro.unobserve(e.target))})},{threshold:.1});
-document.querySelectorAll(".reveal").forEach(e=>ro.observe(e));
-document.getElementById("bookingForm").addEventListener("submit",function(e){e.preventDefault();const btn=this.querySelector("button[type=submit]");btn.textContent="提交中...";btn.disabled=!0;const data={name:this.querySelector('input[type=text]').value,phone:this.querySelector('input[type=tel]').value,service:this.querySelectorAll('select')[0].value,staff:this.querySelectorAll('select')[1].value,date:this.querySelector('input[type=date]').value,time:this.querySelector('input[type=time]').value,note:this.querySelector('textarea').value};console.log("Booking submitted:",data);setTimeout(()=>{btn.textContent="预约成功 ✓";btn.style.background="#2d8a4e";setTimeout(()=>{btn.textContent="提交预约";btn.disabled=!1;btn.style.background="";this.reset()},2500)},1200)});
-</script>
+            <div id="staff" class="tab-content">
+                <div class="card">
+                    <h2>👔 员工管理</h2>
+                    <div class="search-box">
+                        <input type="text" id="staffSearch" placeholder="搜索员工姓名...">
+                        <button class="btn btn-primary" id="addStaffBtn">+ 添加员工</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="staffTable"><thead><tr><th>工号</th><th>姓名</th><th>职位</th><th>电话</th><th>入职日期</th><th>操作</th></tr></thead><tbody></tbody></table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="statistics" class="tab-content">
+                <div class="card">
+                    <h2>📈 统计分析</h2>
+                    <div class="stats-grid" id="statsDetailGrid"></div>
+                    <div class="table-wrapper">
+                        <table id="statsTable"><thead><tr><th>日期</th><th>会员消费</th><th>散客消费</th><th>总消费</th><th>新增会员</th></tr></thead><tbody></tbody></table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="settings" class="tab-content">
+                <div class="card">
+                    <h2>⚙️ 系统设置</h2>
+                    <div class="form-group">
+                        <label>店铺名称</label>
+                        <input type="text" id="shopName" placeholder="请输入店铺名称">
+                    </div>
+                    <div class="form-group">
+                        <label>联系电话</label>
+                        <input type="text" id="shopPhone" placeholder="请输入联系电话">
+                    </div>
+                    <div class="form-group">
+                        <label>店铺地址</label>
+                        <input type="text" id="shopAddress" placeholder="请输入店铺地址">
+                    </div>
+                    <button class="btn btn-primary" onclick="SalonApp.saveSettings()">保存设置</button>
+                    <button class="btn btn-success" onclick="SalonApp.exportData()">导出备份</button>
+                    <button class="btn btn-warning" onclick="document.getElementById('backupFile').click()">恢复备份</button>
+                    <button class="btn btn-danger" onclick="SalonApp.clearAllData()">清空所有数据</button>
+                    <input type="file" id="backupFile" accept="application/json" style="display:none;">
+                    <p class="hint" style="margin-top:12px;">建议每天打烊后导出备份；恢复备份会覆盖当前经营数据。</p>
+                </div>
+            </div>
+        </main>
+
+        <div class="modal" id="commonModal">
+            <div class="modal-content" id="modalContent"></div>
+        </div>
+
+        <div id="toast" class="toast" style="display:none;"></div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        if (window.SalonApp && window.SalonApp._initialized) return;
+
+        // ==================== 配置 ====================
+        var CONFIG = {
+            STORAGE_KEYS: {
+                MEMBERS: 'salon_members_v7',
+                SERVICES: 'salon_services_v7',
+                CONSUMPTIONS: 'salon_consumptions_v7',
+                INVENTORY: 'salon_inventory_v7',
+                STAFF: 'salon_staff_v7',
+                APPOINTMENTS: 'salon_appointments_v8',
+                SETTINGS: 'salon_settings_v7'
+            },
+            USERS_KEY: 'salon_users_v7',
+            CURRENT_USER_KEY: 'salon_current_user',
+            MAX_HISTORY: 50
+        };
+
+        // ==================== 用户认证 ====================
+        var Auth = {
+            getUsers: function() {
+                try {
+                    return JSON.parse(localStorage.getItem(CONFIG.USERS_KEY) || '{}');
+                } catch (e) { return {}; }
+            },
+
+            saveUsers: function(users) {
+                localStorage.setItem(CONFIG.USERS_KEY, JSON.stringify(users));
+            },
+
+            register: function(username, password) {
+                var users = this.getUsers();
+                if (users[username]) {
+                    return { success: false, message: '用户名已存在' };
+                }
+                // 简单密码hash（实际项目建议用更好的加密）
+                users[username] = {
+                    password: btoa(password), // base64编码（简单加密）
+                    createdAt: new Date().toISOString()
+                };
+                this.saveUsers(users);
+                return { success: true };
+            },
+
+            login: function(username, password) {
+                var users = this.getUsers();
+                if (!users[username]) {
+                    return { success: false, message: '用户名不存在' };
+                }
+                if (users[username].password !== btoa(password)) {
+                    return { success: false, message: '密码错误' };
+                }
+                localStorage.setItem(CONFIG.CURRENT_USER_KEY, username);
+                return { success: true };
+            },
+
+            logout: function() {
+                localStorage.removeItem(CONFIG.CURRENT_USER_KEY);
+            },
+
+            getCurrentUser: function() {
+                return localStorage.getItem(CONFIG.CURRENT_USER_KEY);
+            },
+
+            isLoggedIn: function() {
+                return !!this.getCurrentUser();
+            },
+
+            hasUsers: function() {
+                var users = this.getUsers();
+                return Object.keys(users).length > 0;
+            }
+        };
+
+        function cloneData(value) {
+            return JSON.parse(JSON.stringify(value));
+        }
+
+        // ==================== 操作历史管理器 ====================
+        var HistoryManager = {
+            stack: [],
+            index: -1,
+            maxSize: CONFIG.MAX_HISTORY,
+            isInitialized: false,
+
+            push: function(snapshot, description) {
+                if (this.index < this.stack.length - 1) {
+                    this.stack = this.stack.slice(0, this.index + 1);
+                }
+
+                this.stack.push({
+                    data: cloneData(snapshot),
+                    timestamp: new Date().toISOString(),
+                    description: description || '修改数据'
+                });
+
+                if (this.stack.length > this.maxSize) {
+                    this.stack.shift();
+                }
+                this.index = this.stack.length - 1;
+
+                this.updateUI();
+            },
+
+            undo: function() {
+                if (this.index <= 0) return false;
+
+                this.index--;
+                return this.restoreToIndex(this.index);
+            },
+
+            redo: function() {
+                if (this.index >= this.stack.length - 1) return false;
+
+                this.index++;
+                return this.restoreToIndex(this.index);
+            },
+
+            restoreToIndex: function(targetIndex) {
+                if (targetIndex < 0 || targetIndex >= this.stack.length) return false;
+
+                var snapshot = this.stack[targetIndex] && this.stack[targetIndex].data;
+                if (!snapshot) return false;
+
+                try {
+                    Object.keys(CONFIG.STORAGE_KEYS).forEach(function(key) {
+                        if (Object.prototype.hasOwnProperty.call(snapshot, key)) {
+                            DataStore.setNoHistory(key, snapshot[key]);
+                        }
+                    });
+
+                    refreshAllViews();
+                    this.updateUI();
+                    return true;
+                } catch (e) {
+                    console.error('恢复失败:', e);
+                    return false;
+                }
+            },
+
+            updateUI: function() {
+                var undoBtn = document.getElementById('undoBtn');
+                var redoBtn = document.getElementById('redoBtn');
+                var historyCount = document.getElementById('historyCount');
+
+                if (undoBtn) undoBtn.disabled = this.index <= 0;
+                if (redoBtn) redoBtn.disabled = this.index >= this.stack.length - 1;
+                if (historyCount) historyCount.textContent = Math.max(0, this.index);
+            },
+
+            init: function() {
+                if (this.isInitialized) return;
+                this.isInitialized = true;
+
+                this.push(DataStore.createSnapshot(), '初始化');
+            },
+
+            clear: function() {
+                this.stack = [];
+                this.index = -1;
+                this.isInitialized = false;
+                this.updateUI();
+            }
+        };
+
+        // ==================== 数据存储 ====================
+        var DataStore = {
+            cache: {},
+            autoSaveTimer: null,
+            initialized: false,
+
+            init: function() {
+                if (this.initialized) return;
+                var self = this;
+                Object.keys(CONFIG.STORAGE_KEYS).forEach(function(key) {
+                    var storageKey = CONFIG.STORAGE_KEYS[key];
+                    try {
+                        var data = localStorage.getItem(storageKey);
+                        self.cache[key] = data ? JSON.parse(data) : (key === 'SETTINGS' ? {} : []);
+                    } catch (e) {
+                        self.cache[key] = key === 'SETTINGS' ? {} : [];
+                    }
+                });
+
+                this.initialized = true;
+                HistoryManager.init();
+                this.startAutoSave();
+
+                window.addEventListener('beforeunload', function() { self.saveAll(); });
+            },
+
+            get: function(type) {
+                return cloneData(this.cache[type] || (type === 'SETTINGS' ? {} : []));
+            },
+
+            createSnapshot: function() {
+                var snapshot = {};
+                var self = this;
+                Object.keys(CONFIG.STORAGE_KEYS).forEach(function(key) {
+                    snapshot[key] = cloneData(self.cache[key] || (key === 'SETTINGS' ? {} : []));
+                });
+                return snapshot;
+            },
+
+            set: function(type, data, recordHistory) {
+                this.setNoHistory(type, data);
+                if (recordHistory !== false) {
+                    HistoryManager.push(this.createSnapshot(), '修改 ' + type);
+                }
+                this.updateSaveStatus('已保存');
+            },
+
+            commit: function(changes, description) {
+                var self = this;
+                Object.keys(changes).forEach(function(type) { self.setNoHistory(type, changes[type]); });
+                HistoryManager.push(this.createSnapshot(), description || '更新数据');
+                this.updateSaveStatus('已保存');
+            },
+
+            setNoHistory: function(type, data) {
+                this.cache[type] = cloneData(data);
+                var storageKey = CONFIG.STORAGE_KEYS[type];
+                if (storageKey) {
+                    try {
+                        localStorage.setItem(storageKey, JSON.stringify(this.cache[type]));
+                    } catch (e) {}
+                }
+            },
+
+            delete: function(type, id) {
+                var data = this.get(type);
+                var filtered = data.filter(function(item) {
+                    return String(item.id) !== String(id);
+                });
+
+                if (filtered.length < data.length) {
+                    this.set(type, filtered);
+                    return true;
+                }
+                return false;
+            },
+
+            generateId: function(type) {
+                var data = this.get(type);
+                if (!data.length) return 1;
+                var ids = data.map(function(item) { return parseInt(item.id) || 0; });
+                return Math.max.apply(null, ids) + 1;
+            },
+
+            saveAll: function() {
+                var self = this;
+                Object.keys(CONFIG.STORAGE_KEYS).forEach(function(key) {
+                    try {
+                        localStorage.setItem(CONFIG.STORAGE_KEYS[key], JSON.stringify(self.cache[key]));
+                    } catch (e) {}
+                });
+            },
+
+            startAutoSave: function() {
+                var self = this;
+                this.autoSaveTimer = setInterval(function() {
+                    self.saveAll();
+                    self.updateSaveStatus('自动保存');
+                }, 30000);
+            },
+
+            updateSaveStatus: function(status) {
+                var el = document.getElementById('saveStatus');
+                if (el) el.textContent = '✅ ' + status;
+            },
+
+            createBackup: function() {
+                var data = {
+                    members: this.get('MEMBERS'),
+                    services: this.get('SERVICES'),
+                    consumptions: this.get('CONSUMPTIONS'),
+                    inventory: this.get('INVENTORY'),
+                    staff: this.get('STAFF'),
+                    appointments: this.get('APPOINTMENTS'),
+                    settings: this.get('SETTINGS'),
+                    backupTime: new Date().toISOString()
+                };
+                var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                var a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = '理发店数据_' + new Date().toISOString().split('T')[0] + '.json';
+                a.click();
+                showToast('备份已创建');
+            }
+        };
+
+        // ==================== 工具函数 ====================
+        function formatDate(date) {
+            var d = new Date(date);
+            if (isNaN(d.getTime())) return '-';
+            return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + ' ' +
+                   String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+        }
+
+        function formatMoney(amount) {
+            return '¥' + parseFloat(amount || 0).toFixed(2);
+        }
+
+        function getDateKey(date) {
+            var d = new Date(date);
+            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        }
+
+        function escapeHTML(value) {
+            return String(value === undefined || value === null ? '' : value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function getMemberDiscount(level) {
+            var discounts = { '普通会员': 1, '银卡会员': 0.95, '金卡会员': 0.9, 'VIP会员': 0.85 };
+            return discounts[level] || 1;
+        }
+
+        function paymentLabel(method) {
+            return method || '未标注';
+        }
+
+        function showToast(message, type) {
+            type = type || 'success';
+            var toast = document.getElementById('toast');
+            if (!toast) return;
+            toast.textContent = message;
+            toast.className = 'toast toast-' + type;
+            toast.style.display = 'block';
+            setTimeout(function() { toast.style.display = 'none'; }, 3000);
+        }
+
+        function refreshAllViews() {
+            if (typeof renderDashboard === 'function') renderDashboard();
+            if (typeof renderAppointments === 'function') renderAppointments();
+            if (typeof renderMembers === 'function') renderMembers();
+            if (typeof renderServices === 'function') renderServices();
+            if (typeof renderConsumption === 'function') renderConsumption();
+            if (typeof renderInventory === 'function') renderInventory();
+            if (typeof renderStaff === 'function') renderStaff();
+            if (typeof renderStatistics === 'function') renderStatistics();
+            if (typeof loadSettings === 'function') loadSettings();
+        }
+
+        // ==================== 模态框 ====================
+        function openModal(content) {
+            var modalContent = document.getElementById('modalContent');
+            var commonModal = document.getElementById('commonModal');
+            if (!modalContent || !commonModal) return;
+            modalContent.innerHTML = content;
+            commonModal.classList.add('active');
+
+            var closeBtn = modalContent.querySelector('.modal-close');
+            if (closeBtn) closeBtn.onclick = closeModal;
+            var cancelBtn = modalContent.querySelector('.modal-cancel');
+            if (cancelBtn) cancelBtn.onclick = closeModal;
+        }
+
+        function closeModal() {
+            var commonModal = document.getElementById('commonModal');
+            if (commonModal) commonModal.classList.remove('active');
+        }
+
+        document.getElementById('commonModal').addEventListener('click', function(e) {
+            if (e.target.id === 'commonModal') closeModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ==================== 标签页 ====================
+        function switchTab(tabId) {
+            var target = document.getElementById(tabId);
+            if (!target) return;
+            document.querySelectorAll('.tab-btn').forEach(function(button) {
+                button.classList.toggle('active', button.dataset.tab === tabId);
+            });
+            document.querySelectorAll('.tab-content').forEach(function(content) {
+                content.classList.toggle('active', content.id === tabId);
+            });
+
+            switch(tabId) {
+                case 'dashboard': renderDashboard(); break;
+                case 'appointments': renderAppointments(); break;
+                case 'members': renderMembers(); break;
+                case 'services': renderServices(); break;
+                case 'consumption': renderConsumption(); break;
+                case 'inventory': renderInventory(); break;
+                case 'staff': renderStaff(); break;
+                case 'statistics': renderStatistics(); break;
+                case 'settings': loadSettings(); break;
+            }
+        }
+
+        document.querySelectorAll('.tab-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() { switchTab(btn.dataset.tab); });
+        });
+
+        // ==================== 渲染函数 ====================
+        function renderDashboard() {
+            var members = DataStore.get('MEMBERS');
+            var consumptions = DataStore.get('CONSUMPTIONS');
+            var appointments = DataStore.get('APPOINTMENTS');
+            var inventory = DataStore.get('INVENTORY');
+            var today = getDateKey(new Date());
+            var todayConsumptions = consumptions.filter(function(c) { return c.date && String(c.date).slice(0, 10) === today; });
+            var todayIncome = todayConsumptions.reduce(function(sum, c) { return sum + parseFloat(c.amount || 0); }, 0);
+            var activeAppointments = appointments.filter(function(item) {
+                return item.datetime && String(item.datetime).slice(0, 10) === today && item.status !== '已取消' && item.status !== '已完成';
+            });
+            var storedValue = members.reduce(function(sum, member) { return sum + parseFloat(member.balance || 0); }, 0);
+            var dateText = new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' }).format(new Date());
+
+            document.getElementById('statsGrid').innerHTML =
+                '<div class="stat-card"><h3>今日收款</h3><div class="value">' + formatMoney(todayIncome) + '</div><span class="hint">' + todayConsumptions.length + ' 笔交易</span></div>' +
+                '<div class="stat-card"><h3>今日待服务</h3><div class="value">' + activeAppointments.length + '</div><span class="hint">预约已排好，按时提醒顾客</span></div>' +
+                '<div class="stat-card"><h3>会员总数</h3><div class="value">' + members.length + '</div><span class="hint">沉淀回头客资产</span></div>' +
+                '<div class="stat-card"><h3>会员储值</h3><div class="value">' + formatMoney(storedValue) + '</div><span class="hint">当前余额合计</span></div>';
+
+            document.getElementById('dashboardDate').textContent = dateText + ' · 先处理预约，再轻松收银';
+
+            var recent = consumptions.slice(-10).reverse();
+            var recentHtml = recent.length ? recent.map(function(c) {
+                return '<tr><td>' + formatDate(c.date) + '</td><td>' + escapeHTML(c.memberName || '散客') + '</td><td>' +
+                    escapeHTML(c.services && c.services.map ? c.services.map(function(s) { return s.name; }).join('、') : '-') +
+                    '</td><td>' + escapeHTML(paymentLabel(c.paymentMethod)) + '</td><td>' + formatMoney(c.amount) + '</td></tr>';
+            }).join('') : '<tr><td colspan="5" class="empty-state">暂无收银记录，先新增一笔快速收银吧</td></tr>';
+            document.querySelector('#recentTable tbody').innerHTML = recentHtml;
+
+            var todayAppointments = activeAppointments.slice().sort(function(a, b) { return new Date(a.datetime) - new Date(b.datetime); });
+            document.getElementById('todayAppointments').innerHTML = todayAppointments.length ? todayAppointments.map(function(item) {
+                return '<div class="compact-item"><div class="appointment-time">' + formatDate(item.datetime).slice(-5) + '</div><div style="flex:1"><strong>' + escapeHTML(item.customerName) + '</strong><small>' + escapeHTML(item.serviceName || '未选择服务') + ' · ' + escapeHTML(item.staffName || '待安排') + '</small></div><button class="btn btn-sm btn-primary" onclick="SalonApp.checkoutAppointment(' + item.id + ')">收银</button></div>';
+            }).join('') : '<div class="empty-state">今日还没有待服务预约<br><button class="btn btn-sm btn-primary" style="margin-top:10px" onclick="SalonApp.openAppointment()">新建预约</button></div>';
+
+            var lowStock = inventory.filter(function(item) { return parseInt(item.stock, 10) <= 5; });
+            var alerts = [];
+            if (lowStock.length) alerts.push('<div class="compact-item"><div><strong class="low-stock">' + lowStock.length + ' 件商品库存紧急</strong><small>' + escapeHTML(lowStock.slice(0, 2).map(function(item) { return item.name; }).join('、')) + (lowStock.length > 2 ? ' 等' : '') + '</small></div><button class="btn btn-sm btn-danger" onclick="SalonApp.switchTab(\'inventory\')">查看</button></div>');
+            if (activeAppointments.length) alerts.push('<div class="compact-item"><div><strong>今天有 ' + activeAppointments.length + ' 位顾客待服务</strong><small>预约到店后可直接进入收银</small></div><button class="btn btn-sm btn-primary" onclick="SalonApp.switchTab(\'appointments\')">安排</button></div>');
+            if (!alerts.length) alerts.push('<div class="empty-state">一切井然有序<br><span class="hint">库存充足，今日暂无待办</span></div>');
+            document.getElementById('businessAlerts').innerHTML = alerts.join('');
+        }
+
+        function renderAppointments() {
+            var search = (document.getElementById('appointmentSearch') || { value: '' }).value.trim().toLowerCase();
+            var status = (document.getElementById('appointmentStatus') || { value: '' }).value;
+            var data = DataStore.get('APPOINTMENTS').filter(function(item) {
+                var keyword = [item.customerName, item.phone, item.serviceName, item.staffName].join(' ').toLowerCase();
+                return (!search || keyword.indexOf(search) !== -1) && (!status || item.status === status);
+            }).sort(function(a, b) { return new Date(a.datetime) - new Date(b.datetime); });
+            var tbody = document.querySelector('#appointmentTable tbody');
+            if (!data.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">暂无预约，点击右上角创建第一条预约</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.map(function(item) {
+                var statusClass = item.status === '已完成' ? 'success' : item.status === '已取消' ? 'danger' : item.status === '已到店' ? 'warning' : 'normal';
+                var actions = item.status === '已预约' || item.status === '已到店'
+                    ? '<button class="btn btn-sm btn-success" onclick="SalonApp.checkoutAppointment(' + item.id + ')">到店收银</button> <button class="btn btn-sm btn-danger" onclick="SalonApp.cancelAppointment(' + item.id + ')">取消</button>'
+                    : '<span class="hint">—</span>';
+                return '<tr><td>' + formatDate(item.datetime) + '</td><td><strong>' + escapeHTML(item.customerName) + '</strong><br><span class="hint">' + escapeHTML(item.phone || '未留电话') + '</span></td><td>' + escapeHTML(item.serviceName || '未选择') + '</td><td>' + escapeHTML(item.staffName || '待安排') + '</td><td><span class="tag tag-' + statusClass + '">' + escapeHTML(item.status || '已预约') + '</span></td><td>' + actions + '</td></tr>';
+            }).join('');
+        }
+
+        function renderMembers() {
+            var data = DataStore.get('MEMBERS');
+            var searchValue = (document.getElementById('memberSearch') || {value: ''}).value.trim().toLowerCase();
+            var filtered = searchValue ? data.filter(function(item) { return (item.name + item.phone).toLowerCase().indexOf(searchValue) !== -1; }) : data;
+
+            var tbody = document.querySelector('#memberTable tbody');
+            if (!filtered.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">暂无会员数据</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(function(item) {
+                var levelClass = (item.level === 'VIP会员' || item.level === '金卡会员') ? 'tag-vip' : 'tag-normal';
+                return '<tr><td>' + escapeHTML(item.cardNo || '-') + '</td><td>' + escapeHTML(item.name) + '</td><td>' + escapeHTML(item.phone) + '</td><td><span class="tag ' + levelClass + '">' + escapeHTML(item.level || '普通会员') + '</span></td><td>' + formatMoney(item.balance) + '</td><td>' + (item.points || 0) + '</td><td>' +
+                    '<button class="btn btn-sm btn-success" onclick="SalonApp.chargeMember(' + item.id + ')">充值</button> ' +
+                    '<button class="btn btn-sm btn-danger" onclick="SalonApp.deleteMember(' + item.id + ')">删除</button></td></tr>';
+            }).join('');
+        }
+
+        function renderServices() {
+            var search = (document.getElementById('serviceSearch') || { value: '' }).value.trim().toLowerCase();
+            var data = DataStore.get('SERVICES').filter(function(item) {
+                return !search || [item.name, item.category].join(' ').toLowerCase().indexOf(search) !== -1;
+            });
+            var tbody = document.querySelector('#serviceTable tbody');
+            if (!data.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">暂无服务数据</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.map(function(item) {
+                return '<tr><td>' + item.id + '</td><td>' + escapeHTML(item.name) + '</td><td>' + formatMoney(item.price) + '</td><td>' + formatMoney(item.cost) + '</td><td>' + escapeHTML(item.category || '-') + '</td><td>' +
+                    '<button class="btn btn-sm btn-danger" onclick="SalonApp.deleteService(' + item.id + ')">删除</button></td></tr>';
+            }).join('');
+        }
+
+        function renderConsumption() {
+            var search = (document.getElementById('consumptionSearch') || { value: '' }).value.trim().toLowerCase();
+            var data = DataStore.get('CONSUMPTIONS').filter(function(item) {
+                var serviceNames = item.services && item.services.map ? item.services.map(function(service) { return service.name; }).join(' ') : '';
+                return !search || [item.memberName, serviceNames, item.paymentMethod].join(' ').toLowerCase().indexOf(search) !== -1;
+            });
+            var tbody = document.querySelector('#consumptionTable tbody');
+            if (!data.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">暂无收银记录</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.slice().reverse().map(function(c) {
+                return '<tr><td>' + formatDate(c.date) + '</td><td>' + escapeHTML(c.memberName || '散客') + '</td><td>' +
+                    escapeHTML(c.services && c.services.map ? c.services.map(function(s) { return s.name; }).join('、') : '-') +
+                    '</td><td>' + escapeHTML(paymentLabel(c.paymentMethod)) + '<br><span class="hint">' + escapeHTML(c.staffName || '未指定') + '</span></td><td>' + formatMoney(c.amount) + '</td><td><button class="btn btn-sm btn-danger" onclick="SalonApp.deleteConsumption(' + c.id + ')">删除</button></td></tr>';
+            }).join('');
+        }
+
+        function renderInventory() {
+            var search = (document.getElementById('inventorySearch') || { value: '' }).value.trim().toLowerCase();
+            var data = DataStore.get('INVENTORY').filter(function(item) { return !search || String(item.name || '').toLowerCase().indexOf(search) !== -1; });
+            var tbody = document.querySelector('#inventoryTable tbody');
+            if (!data.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">暂无商品数据</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.map(function(item) {
+                var stock = parseInt(item.stock) || 0;
+                var status = stock <= 5 ? 'danger' : stock <= 10 ? 'warning' : 'success';
+                var statusText = stock <= 5 ? '紧急' : stock <= 10 ? '偏低' : '充足';
+                return '<tr><td>' + item.id + '</td><td>' + escapeHTML(item.name) + '</td><td>' + stock + '</td><td>' + formatMoney(item.cost) + '</td><td>' + formatMoney(item.price) + '</td><td><span class="tag tag-' + status + '">' + statusText + '</span></td><td>' +
+                    '<button class="btn btn-sm btn-danger" onclick="SalonApp.deleteInventory(' + item.id + ')">删除</button></td></tr>';
+            }).join('');
+        }
+
+        function renderStaff() {
+            var search = (document.getElementById('staffSearch') || { value: '' }).value.trim().toLowerCase();
+            var data = DataStore.get('STAFF').filter(function(item) { return !search || [item.name, item.position, item.phone].join(' ').toLowerCase().indexOf(search) !== -1; });
+            var tbody = document.querySelector('#staffTable tbody');
+            if (!data.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">暂无员工数据</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.map(function(item) {
+                return '<tr><td>' + item.id + '</td><td>' + escapeHTML(item.name) + '</td><td>' + escapeHTML(item.position || '-') + '</td><td>' + escapeHTML(item.phone || '-') + '</td><td>' + escapeHTML(item.hireDate || '-') + '</td><td>' +
+                    '<button class="btn btn-sm btn-danger" onclick="SalonApp.deleteStaff(' + item.id + ')">删除</button></td></tr>';
+            }).join('');
+        }
+
+        function renderStatistics() {
+            var consumptions = DataStore.get('CONSUMPTIONS');
+            var members = DataStore.get('MEMBERS');
+            var totalIncome = consumptions.reduce(function(sum, c) { return sum + parseFloat(c.amount || 0); }, 0);
+            var today = getDateKey(new Date());
+            var todayConsumptions = consumptions.filter(function(item) { return String(item.date || '').slice(0, 10) === today; });
+            var averageTicket = consumptions.length ? totalIncome / consumptions.length : 0;
+
+            document.getElementById('statsDetailGrid').innerHTML =
+                '<div class="stat-card"><h3>今日收款</h3><div class="value">' + formatMoney(todayConsumptions.reduce(function(sum, item) { return sum + parseFloat(item.amount || 0); }, 0)) + '</div></div>' +
+                '<div class="stat-card"><h3>累计收款</h3><div class="value">' + formatMoney(totalIncome) + '</div></div>' +
+                '<div class="stat-card"><h3>平均客单价</h3><div class="value">' + formatMoney(averageTicket) + '</div></div>' +
+                '<div class="stat-card"><h3>会员总数</h3><div class="value">' + members.length + '</div></div>';
+
+            var days = [];
+            for (var offset = 6; offset >= 0; offset--) {
+                var date = new Date();
+                date.setDate(date.getDate() - offset);
+                days.push(getDateKey(date));
+            }
+            document.querySelector('#statsTable tbody').innerHTML = days.map(function(day) {
+                var records = consumptions.filter(function(item) { return String(item.date || '').slice(0, 10) === day; });
+                var memberIncome = records.filter(function(item) { return item.memberId; }).reduce(function(sum, item) { return sum + parseFloat(item.amount || 0); }, 0);
+                var guestIncome = records.filter(function(item) { return !item.memberId; }).reduce(function(sum, item) { return sum + parseFloat(item.amount || 0); }, 0);
+                var newMembers = members.filter(function(member) { return String(member.createdAt || '').slice(0, 10) === day; }).length;
+                return '<tr><td>' + day + '</td><td>' + formatMoney(memberIncome) + '</td><td>' + formatMoney(guestIncome) + '</td><td>' + formatMoney(memberIncome + guestIncome) + '</td><td>' + newMembers + '</td></tr>';
+            }).join('');
+        }
+
+        function loadSettings() {
+            var settings = DataStore.get('SETTINGS');
+            document.getElementById('shopName').value = settings.shopName || '我的理发店';
+            document.getElementById('shopPhone').value = settings.shopPhone || '';
+            document.getElementById('shopAddress').value = settings.shopAddress || '';
+            document.getElementById('appTitle').textContent = '✂️ ' + (settings.shopName || '我的理发店');
+        }
+
+        // ==================== 操作函数 ====================
+        function getDateTimeLocalValue(date) {
+            var d = new Date(date);
+            return getDateKey(d) + 'T' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+        }
+
+        function openAppointmentModal() {
+            var members = DataStore.get('MEMBERS');
+            var services = DataStore.get('SERVICES');
+            var staff = DataStore.get('STAFF');
+            var memberOptions = '<option value="">散客 / 新顾客</option>' + members.map(function(member) {
+                return '<option value="' + member.id + '">' + escapeHTML(member.name) + ' · ' + escapeHTML(member.phone) + '</option>';
+            }).join('');
+            var serviceOptions = '<option value="">暂不选择</option>' + services.map(function(service) {
+                return '<option value="' + service.id + '">' + escapeHTML(service.name) + ' · ' + formatMoney(service.price) + '</option>';
+            }).join('');
+            var staffOptions = '<option value="">待安排</option>' + staff.map(function(item) {
+                return '<option value="' + item.id + '">' + escapeHTML(item.name) + (item.position ? ' · ' + escapeHTML(item.position) : '') + '</option>';
+            }).join('');
+
+            openModal(
+                '<div class="modal-header"><h3>新建预约</h3><button type="button" class="modal-close">×</button></div>' +
+                '<form id="appointmentForm">' +
+                    '<div class="form-group"><label>选择会员</label><select id="aMember">' + memberOptions + '</select></div>' +
+                    '<div class="form-group"><label>顾客姓名 *</label><input type="text" id="aName" required></div>' +
+                    '<div class="form-group"><label>联系电话</label><input type="tel" id="aPhone" placeholder="便于到店提醒"></div>' +
+                    '<div class="form-group"><label>预约到店时间 *</label><input type="datetime-local" id="aDatetime" value="' + getDateTimeLocalValue(new Date()) + '" required></div>' +
+                    '<div class="form-group"><label>服务项目</label><select id="aService">' + serviceOptions + '</select></div>' +
+                    '<div class="form-group"><label>服务人员</label><select id="aStaff">' + staffOptions + '</select></div>' +
+                    '<div class="form-group"><label>备注</label><textarea id="aNote" rows="2" placeholder="例如：指定发型、到店前确认"></textarea></div>' +
+                    '<div class="modal-footer"><button type="button" class="btn btn-danger modal-cancel">取消</button><button type="button" class="btn btn-primary" id="appointmentSaveBtn">保存预约</button></div>' +
+                '</form>'
+            );
+
+            function syncMemberInfo() {
+                var memberId = document.getElementById('aMember').value;
+                var member = members.find(function(item) { return String(item.id) === String(memberId); });
+                if (member) {
+                    document.getElementById('aName').value = member.name || '';
+                    document.getElementById('aPhone').value = member.phone || '';
+                }
+            }
+            document.getElementById('aMember').addEventListener('change', syncMemberInfo);
+            document.getElementById('appointmentSaveBtn').addEventListener('click', function() {
+                var memberId = document.getElementById('aMember').value;
+                var serviceId = document.getElementById('aService').value;
+                var staffId = document.getElementById('aStaff').value;
+                var service = services.find(function(item) { return String(item.id) === String(serviceId); });
+                var staffMember = staff.find(function(item) { return String(item.id) === String(staffId); });
+                var customerName = document.getElementById('aName').value.trim();
+                var datetime = document.getElementById('aDatetime').value;
+                if (!customerName || !datetime) { showToast('请填写顾客姓名和到店时间', 'error'); return; }
+
+                var appointments = DataStore.get('APPOINTMENTS');
+                appointments.push({
+                    id: DataStore.generateId('APPOINTMENTS'),
+                    memberId: memberId || null,
+                    customerName: customerName,
+                    phone: document.getElementById('aPhone').value.trim(),
+                    datetime: datetime,
+                    serviceId: serviceId || null,
+                    serviceName: service ? service.name : '',
+                    staffId: staffId || null,
+                    staffName: staffMember ? staffMember.name : '',
+                    note: document.getElementById('aNote').value.trim(),
+                    status: '已预约',
+                    createdAt: new Date().toISOString()
+                });
+                DataStore.set('APPOINTMENTS', appointments);
+                closeModal();
+                renderAppointments();
+                renderDashboard();
+                showToast('预约已创建');
+            });
+        }
+
+        function checkoutAppointment(id) {
+            var appointment = DataStore.get('APPOINTMENTS').find(function(item) { return String(item.id) === String(id); });
+            if (!appointment || appointment.status === '已取消' || appointment.status === '已完成') return;
+            openConsumptionModal({ appointmentId: appointment.id, memberId: appointment.memberId, serviceId: appointment.serviceId, staffId: appointment.staffId, customerName: appointment.customerName });
+        }
+
+        function cancelAppointment(id) {
+            if (!confirm('确定取消这条预约吗？')) return;
+            var appointments = DataStore.get('APPOINTMENTS');
+            var appointment = appointments.find(function(item) { return String(item.id) === String(id); });
+            if (!appointment) return;
+            appointment.status = '已取消';
+            DataStore.set('APPOINTMENTS', appointments);
+            refreshAllViews();
+            showToast('预约已取消', 'info');
+        }
+
+        function openMemberModal() {
+            var levels = [
+                { name: '普通会员', discount: 1.0 },
+                { name: '银卡会员', discount: 0.95 },
+                { name: '金卡会员', discount: 0.9 },
+                { name: 'VIP会员', discount: 0.85 }
+            ];
+            var levelsHtml = levels.map(function(l) {
+                return '<option value="' + l.name + '">' + l.name + ' (' + (l.discount * 100) + '%折)</option>';
+            }).join('');
+
+            openModal(
+                '<div class="modal-header"><h3>添加会员</h3><button type="button" class="modal-close">×</button></div>' +
+                '<form id="memberForm">' +
+                    '<div class="form-group"><label>姓名 *</label><input type="text" id="mName" required></div>' +
+                    '<div class="form-group"><label>手机号 *</label><input type="tel" id="mPhone" required></div>' +
+                    '<div class="form-group"><label>会员等级</label><select id="mLevel">' + levelsHtml + '</select></div>' +
+                    '<div class="form-group"><label>初始余额</label><input type="number" id="mBalance" value="0" min="0"></div>' +
+                    '<div class="modal-footer">' +
+                        '<button type="button" class="btn btn-danger modal-cancel">取消</button>' +
+                        '<button type="button" class="btn btn-primary" id="memberSaveBtn">保存</button>' +
+                    '</div>' +
+                '</form>'
+            );
+
+            document.getElementById('memberSaveBtn').addEventListener('click', function() {
+                var name = document.getElementById('mName').value.trim();
+                var phone = document.getElementById('mPhone').value.trim();
+                if (!name || !phone) { showToast('请填写完整信息', 'error'); return; }
+
+                var members = DataStore.get('MEMBERS');
+                if (members.some(function(item) { return item.phone === phone; })) { showToast('该手机号已存在，请直接搜索会员', 'error'); return; }
+                var newId = DataStore.generateId('MEMBERS');
+                members.push({
+                    id: newId,
+                    name: name,
+                    phone: phone,
+                    level: document.getElementById('mLevel').value,
+                    balance: parseFloat(document.getElementById('mBalance').value) || 0,
+                    cardNo: 'VIP' + String(newId).padStart(6, '0'),
+                    points: 0,
+                    createdAt: formatDate(new Date())
+                });
+
+                DataStore.set('MEMBERS', members);
+                closeModal();
+                renderMembers();
+                renderDashboard();
+                showToast('会员添加成功');
+            });
+        }
+
+        function deleteMember(id) {
+            if (confirm('确定删除该会员?')) {
+                DataStore.delete('MEMBERS', id);
+                renderMembers();
+                renderDashboard();
+                showToast('删除成功');
+            }
+        }
+
+        function chargeMember(id) {
+            var member = DataStore.get('MEMBERS').find(function(m) { return String(m.id) === String(id); });
+            openModal(
+                '<div class="modal-header"><h3>会员充值 - ' + (member ? member.name : '') + '</h3><button type="button" class="modal-close">×</button></div>' +
+                '<div class="card" style="background:#1a1a2e;"><p>当前余额: <strong>' + formatMoney(member ? member.balance : 0) + '</strong></p></div>' +
+                '<form id="chargeForm">' +
+                    '<div class="form-group"><label>充值金额 *</label><input type="number" id="cAmount" min="0" required></div>' +
+                    '<div class="modal-footer">' +
+                        '<button type="button" class="btn btn-danger modal-cancel">取消</button>' +
+                        '<button type="button" class="btn btn-success" id="chargeSaveBtn">确认充值</button>' +
+                    '</div>' +
+                '</form>'
+            );
+            document.getElementById('chargeSaveBtn').addEventListener('click', function() {
+                var amount = parseFloat(document.getElementById('cAmount').value) || 0;
+                if (amount <= 0) { showToast('请输入大于 0 的充值金额', 'error'); return; }
+                var members = DataStore.get('MEMBERS');
+                var m = members.find(function(x) { return String(x.id) === String(id); });
+                if (m) { m.balance += amount; m.points += Math.floor(amount); }
+                DataStore.set('MEMBERS', members);
+                closeModal();
+                renderMembers();
+                showToast('充值成功');
+            });
+        }
+
+        function openServiceModal() {
+            openModal(
+                '<div class="modal-header"><h3>添加服务</h3><button type="button" class="modal-close">×</button></div>' +
+                '<form id="serviceForm">' +
+                    '<div class="form-group"><label>服务名称 *</label><input type="text" id="sName" required></div>' +
+                    '<div class="form-group"><label>价格 *</label><input type="number" id="sPrice" min="0" required></div>' +
+                    '<div class="form-group"><label>成本</label><input type="number" id="sCost" value="0" min="0"></div>' +
+                    '<div class="form-group"><label>分类</label><input type="text" id="sCategory"></div>' +
+                    '<div class="modal-footer">' +
+                        '<button type="button" class="btn btn-danger modal-cancel">取消</button>' +
+                        '<button type="button" class="btn btn-primary" id="serviceSaveBtn">保存</button>' +
+                    '</div>' +
+                '</form>'
+            );
+            document.getElementById('serviceSaveBtn').addEventListener('click', function() {
+                var name = document.getElementById('sName').value.trim();
+                var price = parseFloat(document.getElementById('sPrice').value) || 0;
+                if (!name) { showToast('请填写服务名称', 'error'); return; }
+
+                var services = DataStore.get('SERVICES');
+                services.push({
+                    id: DataStore.generateId('SERVICES'),
+                    name: name,
+                    price: price,
+                    cost: parseFloat(document.getElementById('sCost').value) || 0,
+                    category: document.getElementById('sCategory').value.trim()
+                });
+                DataStore.set('SERVICES', services);
+                closeModal();
+                renderServices();
+                showToast('服务添加成功');
+            });
+        }
+
+        function deleteService(id) {
+            if (confirm('确定删除该服务?')) {
+                DataStore.delete('SERVICES', id);
+                renderServices();
+                showToast('删除成功');
+            }
+        }
+
+        function openConsumptionModal(preset) {
+            preset = preset || {};
+            var members = DataStore.get('MEMBERS');
+            var services = DataStore.get('SERVICES');
+            var staff = DataStore.get('STAFF');
+            var memberOptions = '<option value="">散客</option>' + members.map(function(member) {
+                return '<option value="' + member.id + '">' + escapeHTML(member.name) + ' · 余额 ' + formatMoney(member.balance) + '</option>';
+            }).join('');
+            var serviceOptions = services.length ? '<option value="">请选择服务</option>' + services.map(function(service) {
+                return '<option value="' + service.id + '">' + escapeHTML(service.name) + ' · ' + formatMoney(service.price) + '</option>';
+            }).join('') : '<option value="">请先添加服务项目</option>';
+            var staffOptions = '<option value="">未指定</option>' + staff.map(function(item) {
+                return '<option value="' + item.id + '">' + escapeHTML(item.name) + '</option>';
+            }).join('');
+
+            openModal(
+                '<div class="modal-header"><h3>快速收银</h3><button type="button" class="modal-close">×</button></div>' +
+                '<form id="consumptionForm">' +
+                    '<div class="form-group"><label>顾客</label><select id="cMember">' + memberOptions + '</select></div>' +
+                    '<div class="form-group"><label>服务项目 *</label><select id="cService">' + serviceOptions + '</select></div>' +
+                    '<div class="form-group"><label>服务人员</label><select id="cStaff">' + staffOptions + '</select></div>' +
+                    '<div class="form-group"><label>支付方式</label><select id="cPayment"><option value="微信">微信</option><option value="支付宝">支付宝</option><option value="现金">现金</option><option value="会员余额">会员余额</option></select></div>' +
+                    '<div class="payment-summary" id="checkoutSummary">选择服务后自动计算应收金额</div>' +
+                    '<div class="form-group" style="margin-top:15px"><label>实收金额 *</label><input type="number" id="cAmount" value="0" min="0" step="0.01"></div>' +
+                    '<div class="modal-footer">' +
+                        '<button type="button" class="btn btn-danger modal-cancel">取消</button>' +
+                        '<button type="button" class="btn btn-success" id="consumptionSaveBtn">确认收款</button>' +
+                    '</div>' +
+                '</form>'
+            );
+
+            var memberSelect = document.getElementById('cMember');
+            var serviceSelect = document.getElementById('cService');
+            var staffSelect = document.getElementById('cStaff');
+            if (preset.memberId) memberSelect.value = String(preset.memberId);
+            if (preset.serviceId) serviceSelect.value = String(preset.serviceId);
+            if (preset.staffId) staffSelect.value = String(preset.staffId);
+
+            function updateCheckoutSummary() {
+                var member = members.find(function(item) { return String(item.id) === String(memberSelect.value); });
+                var service = services.find(function(item) { return String(item.id) === String(serviceSelect.value); });
+                var price = service ? parseFloat(service.price || 0) : 0;
+                var discount = member ? getMemberDiscount(member.level) : 1;
+                var amount = price * discount;
+                document.getElementById('cAmount').value = amount.toFixed(2);
+                var summary = service ? '标价 ' + formatMoney(price) + (member && discount < 1 ? ' · ' + escapeHTML(member.level) + ' ' + Math.round(discount * 100) + '% 折' : '') + ' · 应收 ' + formatMoney(amount) : '请选择服务项目后继续收银';
+                if (member) summary += ' · 余额 ' + formatMoney(member.balance);
+                document.getElementById('checkoutSummary').textContent = summary;
+            }
+            memberSelect.addEventListener('change', updateCheckoutSummary);
+            serviceSelect.addEventListener('change', updateCheckoutSummary);
+            updateCheckoutSummary();
+
+            document.getElementById('consumptionSaveBtn').addEventListener('click', function() {
+                var memberId = memberSelect.value;
+                var serviceId = serviceSelect.value;
+                var staffId = staffSelect.value;
+                var paymentMethod = document.getElementById('cPayment').value;
+                var amount = parseFloat(document.getElementById('cAmount').value) || 0;
+                var memberObj = memberId ? members.find(function(member) { return String(member.id) === String(memberId); }) : null;
+                var service = serviceId ? services.find(function(item) { return String(item.id) === String(serviceId); }) : null;
+                var staffMember = staffId ? staff.find(function(item) { return String(item.id) === String(staffId); }) : null;
+                if (!service) { showToast('请先选择服务项目', 'error'); return; }
+                if (amount <= 0) { showToast('实收金额必须大于 0', 'error'); return; }
+                if (paymentMethod === '会员余额' && !memberObj) { showToast('会员余额支付需要先选择会员', 'error'); return; }
+                if (paymentMethod === '会员余额' && parseFloat(memberObj.balance || 0) < amount) { showToast('会员余额不足，请改用其他支付方式', 'error'); return; }
+
+                var pointsEarned = memberObj ? Math.floor(amount) : 0;
+                if (memberObj) {
+                    memberObj.points = parseInt(memberObj.points || 0, 10) + pointsEarned;
+                    if (paymentMethod === '会员余额') memberObj.balance = parseFloat(memberObj.balance || 0) - amount;
+                }
+                var record = {
+                    id: DataStore.generateId('CONSUMPTIONS'),
+                    memberId: memberId || null,
+                    memberName: memberObj ? memberObj.name : (preset.customerName || null),
+                    services: [service],
+                    staffId: staffId || null,
+                    staffName: staffMember ? staffMember.name : '',
+                    originalAmount: parseFloat(service.price || 0),
+                    discount: memberObj ? getMemberDiscount(memberObj.level) : 1,
+                    amount: amount,
+                    paymentMethod: paymentMethod,
+                    pointsEarned: pointsEarned,
+                    balanceDeducted: paymentMethod === '会员余额' ? amount : 0,
+                    date: formatDate(new Date()),
+                    appointmentId: preset.appointmentId || null
+                };
+                var consumptions = DataStore.get('CONSUMPTIONS');
+                consumptions.push(record);
+                var changes = { CONSUMPTIONS: consumptions };
+                if (memberObj) changes.MEMBERS = members;
+                if (preset.appointmentId) {
+                    var appointments = DataStore.get('APPOINTMENTS');
+                    var appointment = appointments.find(function(item) { return String(item.id) === String(preset.appointmentId); });
+                    if (appointment) appointment.status = '已完成';
+                    changes.APPOINTMENTS = appointments;
+                }
+                DataStore.commit(changes, '完成收银');
+                closeModal();
+                refreshAllViews();
+                showToast('收款成功，记录已保存');
+            });
+        }
+
+        function deleteConsumption(id) {
+            var consumptions = DataStore.get('CONSUMPTIONS');
+            var record = consumptions.find(function(item) { return String(item.id) === String(id); });
+            if (!record || !confirm('确定删除该收银记录吗？如使用会员余额会同步退回余额。')) return;
+            var changes = { CONSUMPTIONS: consumptions.filter(function(item) { return String(item.id) !== String(id); }) };
+            if (record.memberId) {
+                var members = DataStore.get('MEMBERS');
+                var member = members.find(function(item) { return String(item.id) === String(record.memberId); });
+                if (member) {
+                    member.balance = parseFloat(member.balance || 0) + parseFloat(record.balanceDeducted || 0);
+                    member.points = Math.max(0, parseInt(member.points || 0, 10) - parseInt(record.pointsEarned || 0, 10));
+                    changes.MEMBERS = members;
+                }
+            }
+            DataStore.commit(changes, '删除收银记录');
+            refreshAllViews();
+            showToast('收银记录已删除');
+        }
+
+        function openInventoryModal() {
+            openModal(
+                '<div class="modal-header"><h3>添加商品</h3><button type="button" class="modal-close">×</button></div>' +
+                '<form id="inventoryForm">' +
+                    '<div class="form-group"><label>商品名称 *</label><input type="text" id="iName" required></div>' +
+                    '<div class="form-group"><label>库存数量</label><input type="number" id="iStock" value="0" min="0"></div>' +
+                    '<div class="form-group"><label>进价</label><input type="number" id="iCost" value="0" min="0"></div>' +
+                    '<div class="form-group"><label>售价</label><input type="number" id="iPrice" value="0" min="0"></div>' +
+                    '<div class="modal-footer">' +
+                        '<button type="button" class="btn btn-danger modal-cancel">取消</button>' +
+                        '<button type="button" class="btn btn-primary" id="inventorySaveBtn">保存</button>' +
+                    '</div>' +
+                '</form>'
+            );
+            document.getElementById('inventorySaveBtn').addEventListener('click', function() {
+                var name = document.getElementById('iName').value.trim();
+                if (!name) { showToast('请填写商品名称', 'error'); return; }
+
+                var inventory = DataStore.get('INVENTORY');
+                inventory.push({
+                    id: DataStore.generateId('INVENTORY'),
+                    name: name,
+                    stock: parseInt(document.getElementById('iStock').value) || 0,
+                    cost: parseFloat(document.getElementById('iCost').value) || 0,
+                    price: parseFloat(document.getElementById('iPrice').value) || 0
+                });
+                DataStore.set('INVENTORY', inventory);
+                closeModal();
+                renderInventory();
+                showToast('商品添加成功');
+            });
+        }
+
+        function deleteInventory(id) {
+            if (confirm('确定删除该商品?')) {
+                DataStore.delete('INVENTORY', id);
+                renderInventory();
+                showToast('删除成功');
+            }
+        }
+
+        function openStaffModal() {
+            openModal(
+                '<div class="modal-header"><h3>添加员工</h3><button type="button" class="modal-close">×</button></div>' +
+                '<form id="staffForm">' +
+                    '<div class="form-group"><label>姓名 *</label><input type="text" id="stName" required></div>' +
+                    '<div class="form-group"><label>职位</label><input type="text" id="stPosition"></div>' +
+                    '<div class="form-group"><label>电话</label><input type="tel" id="stPhone"></div>' +
+                    '<div class="form-group"><label>入职日期</label><input type="date" id="stHireDate"></div>' +
+                    '<div class="modal-footer">' +
+                        '<button type="button" class="btn btn-danger modal-cancel">取消</button>' +
+                        '<button type="button" class="btn btn-primary" id="staffSaveBtn">保存</button>' +
+                    '</div>' +
+                '</form>'
+            );
+            document.getElementById('staffSaveBtn').addEventListener('click', function() {
+                var name = document.getElementById('stName').value.trim();
+                if (!name) { showToast('请填写员工姓名', 'error'); return; }
+
+                var staff = DataStore.get('STAFF');
+                staff.push({
+                    id: DataStore.generateId('STAFF'),
+                    name: name,
+                    position: document.getElementById('stPosition').value.trim(),
+                    phone: document.getElementById('stPhone').value.trim(),
+                    hireDate: document.getElementById('stHireDate').value
+                });
+                DataStore.set('STAFF', staff);
+                closeModal();
+                renderStaff();
+                showToast('员工添加成功');
+            });
+        }
+
+        function deleteStaff(id) {
+            if (confirm('确定删除该员工?')) {
+                DataStore.delete('STAFF', id);
+                renderStaff();
+                showToast('删除成功');
+            }
+        }
+
+        function saveSettings() {
+            var settings = {
+                shopName: document.getElementById('shopName').value.trim(),
+                shopPhone: document.getElementById('shopPhone').value.trim(),
+                shopAddress: document.getElementById('shopAddress').value.trim()
+            };
+            DataStore.set('SETTINGS', settings);
+            document.getElementById('appTitle').textContent = '✂️ ' + (settings.shopName || '我的理发店');
+            showToast('设置保存成功');
+        }
+
+        function exportData() {
+            DataStore.createBackup();
+        }
+
+        function importData(file) {
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    var data = JSON.parse(event.target.result);
+                    if (!confirm('恢复备份会覆盖当前经营数据，是否继续？')) return;
+                    var mappings = {
+                        MEMBERS: 'members', SERVICES: 'services', CONSUMPTIONS: 'consumptions',
+                        INVENTORY: 'inventory', STAFF: 'staff', APPOINTMENTS: 'appointments', SETTINGS: 'settings'
+                    };
+                    Object.keys(mappings).forEach(function(key) {
+                        var value = data[mappings[key]];
+                        if (value !== undefined) DataStore.setNoHistory(key, value);
+                    });
+                    DataStore.saveAll();
+                    HistoryManager.clear();
+                    HistoryManager.init();
+                    refreshAllViews();
+                    showToast('备份已恢复');
+                } catch (error) {
+                    showToast('备份文件无法识别，请选择系统导出的 JSON 文件', 'error');
+                }
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        function clearAllData() {
+            if (confirm('⚠️ 确定要清空所有数据吗？')) {
+                if (confirm('再次确认：所有数据都将被永久删除！')) {
+                    Object.keys(CONFIG.STORAGE_KEYS).forEach(function(key) { DataStore.setNoHistory(key, key === 'SETTINGS' ? {} : []); });
+                    HistoryManager.clear();
+                    HistoryManager.init();
+                    refreshAllViews();
+                    showToast('所有数据已清空');
+                }
+            }
+        }
+
+        // ==================== 全局API ====================
+        window.SalonApp = {
+            _initialized: true,
+
+            // 会员
+            deleteMember: deleteMember,
+            chargeMember: chargeMember,
+            openMember: openMemberModal,
+
+            // 预约
+            openAppointment: openAppointmentModal,
+            checkoutAppointment: checkoutAppointment,
+            cancelAppointment: cancelAppointment,
+            switchTab: switchTab,
+
+            // 服务
+            deleteService: deleteService,
+
+            // 消费
+            deleteConsumption: deleteConsumption,
+            openCheckout: openConsumptionModal,
+
+            // 库存
+            deleteInventory: deleteInventory,
+
+            // 员工
+            deleteStaff: deleteStaff,
+
+            // 设置
+            saveSettings: saveSettings,
+            exportData: exportData,
+            importData: importData,
+            clearAllData: clearAllData,
+
+            // 撤销/重做
+            undo: function() {
+                if (HistoryManager.undo()) {
+                    showToast('已撤销');
+                } else {
+                    showToast('没有可撤销的操作', 'info');
+                }
+            },
+            redo: function() {
+                if (HistoryManager.redo()) {
+                    showToast('已重做');
+                } else {
+                    showToast('没有可重做的操作', 'info');
+                }
+            },
+            createBackup: function() { DataStore.createBackup(); },
+
+            // 登录/注册
+            showRegister: function() {
+                document.getElementById('registerModal').classList.add('active');
+            },
+            closeRegister: function() {
+                document.getElementById('registerModal').classList.remove('active');
+            },
+            logout: function() {
+                Auth.logout();
+                document.getElementById('mainApp').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'flex';
+            }
+        };
+
+        // ==================== 按钮绑定 ====================
+        document.getElementById('addMemberBtn').addEventListener('click', openMemberModal);
+        document.getElementById('addAppointmentBtn').addEventListener('click', openAppointmentModal);
+        document.getElementById('addServiceBtn').addEventListener('click', openServiceModal);
+        document.getElementById('addConsumptionBtn').addEventListener('click', openConsumptionModal);
+        document.getElementById('addInventoryBtn').addEventListener('click', openInventoryModal);
+        document.getElementById('addStaffBtn').addEventListener('click', openStaffModal);
+
+        // 搜索
+        ['member', 'appointment', 'service', 'consumption', 'inventory', 'staff'].forEach(function(type) {
+            var el = document.getElementById(type + 'Search');
+            if (el) {
+                el.addEventListener('input', function() {
+                    if (type === 'member') renderMembers();
+                    if (type === 'appointment') renderAppointments();
+                    if (type === 'service') renderServices();
+                    if (type === 'consumption') renderConsumption();
+                    if (type === 'inventory') renderInventory();
+                    if (type === 'staff') renderStaff();
+                });
+            }
+        });
+        document.getElementById('appointmentStatus').addEventListener('change', renderAppointments);
+        document.getElementById('backupFile').addEventListener('change', function(event) { importData(event.target.files[0]); event.target.value = ''; });
+
+        // ==================== 登录表单 ====================
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var username = document.getElementById('loginUsername').value.trim();
+            var password = document.getElementById('loginPassword').value;
+            var result = Auth.login(username, password);
+
+            if (result.success) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                DataStore.init();
+                renderDashboard();
+                HistoryManager.updateUI();
+            } else {
+                document.getElementById('loginError').textContent = result.message;
+            }
+        });
+
+        // 注册表单
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var username = document.getElementById('regUsername').value.trim();
+            var password = document.getElementById('regPassword').value;
+            var password2 = document.getElementById('regPassword2').value;
+
+            if (password !== password2) {
+                showToast('两次密码不一致', 'error');
+                return;
+            }
+
+            var result = Auth.register(username, password);
+            if (result.success) {
+                showToast('注册成功，请登录');
+                SalonApp.closeRegister();
+                document.getElementById('loginUsername').value = username;
+                document.getElementById('loginPassword').value = '';
+            } else {
+                showToast(result.message, 'error');
+            }
+        });
+
+        // ==================== 初始化检查 ====================
+        if (Auth.isLoggedIn()) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            DataStore.init();
+            renderDashboard();
+            HistoryManager.updateUI();
+        } else if (!Auth.hasUsers()) {
+            // 如果没有账户，自动创建默认账户
+            Auth.register('admin', 'admin');
+            document.getElementById('loginError').textContent = '默认账户: admin / admin';
+        }
+
+    })();
+    </script>
 </body>
 </html>
