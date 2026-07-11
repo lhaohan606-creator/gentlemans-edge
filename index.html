@@ -789,6 +789,18 @@ window.addEventListener('beforeunload', function() { self.saveAll(); });
         }
 
         // 修改 commit 方法，每次保存时自动同步到云端
+                        // 修改 setNoHistory 方法，每次保存时自动同步到云端
+        var _origSetNoHistory = DataStore.setNoHistory;
+        DataStore.setNoHistory = function(type, data) {
+            _origSetNoHistory.call(this, type, data);
+            if (CLOUD_SYNC && dbRef) {
+                var updates = {};
+                updates['/' + type] = this.cache[type];
+                dbRef.update(updates)
+                    .then(function() { setSyncStatus('已同步', 'success'); })
+                    .catch(function() { setSyncStatus('同步失败', 'error'); });
+            }
+        };
         var _origCommit = DataStore.commit;
         DataStore.commit = function(changes, description) {
             _origCommit.call(this, changes, description);
