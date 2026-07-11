@@ -384,19 +384,14 @@
                         <input type="text" id="shopAddress" placeholder="请输入店铺地址">
                     </div>
                     
-                    <div class="card" style="border:2px solid #4f46e5">
-                        <h2 style="color:#4f46e5">☁️ 云端同步</h2>
-                        <p style="color:#aaa;font-size:.9em;margin-bottom:15px">通过 GitHub 在手机、平板、电脑之间同步数据</p>
-                        <div class="form-group">
-                            <label>GitHub 访问令牌（Token）</label>
-                            <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                    <div class="card" style="border:2px solid #0ea5a0">
+                        <h2 style="color:#0ea5a0">☁️ 数据同步状态</h2>
+                        <p style="color:#aaa;font-size:.9em;margin-bottom:10px">数据自动保存到 Firebase 云端，多设备实时同步</p>
+                        <div style="display:flex;gap:15px;flex-wrap:wrap;margin-bottom:8px">
+                            <span id="syncStatusDisplay" style="font-size:.95em">☁️ <span style="color:#27ae60">已连接</span></span>
+                            <span style="font-size:.85em;color:#aaa">上次同步: <span id="lastSyncTime">刚刚</span></span>
                         </div>
-                        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
-                            <button class="btn btn-primary" onclick="DataStore.syncToGitHub()">📤 上传到云端</button>
-                            <button class="btn btn-success" onclick="DataStore.syncFromGitHub()">📥 从云端下载</button>
-                        </div>
-                        <div id="syncStatus" style="font-size:.85em;color:#aaa;margin-top:8px"></div>
-                        <p class="hint">如何获取 Token？<a href="https://github.com/settings/tokens" target="_blank" style="color:#4f46e5">点此创建</a> → 勾选 repo 权限 → 生成后复制粘贴到上方</p>
+                        <p class="hint" style="font-size:.82em">电脑、手机、平板打开同一网址，数据自动同步，无需手动操作</p>
                     </div>
 <button class="btn btn-primary" onclick="SalonApp.saveSettings()">保存设置</button>
                     <button class="btn btn-success" onclick="SalonApp.exportData()">导出备份</button>
