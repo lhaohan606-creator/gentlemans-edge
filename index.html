@@ -159,6 +159,10 @@
         .low-stock { color: var(--danger); font-weight: 700; }
         @media (max-width: 768px) { .header { padding: 18px 20px; } .header-bar { align-items: flex-start; } .header h1 { font-size: 1.35rem; } .toolbar { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; } .dashboard-hero { align-items: flex-start; flex-direction: column; } .dashboard-panels { grid-template-columns: 1fr; } .page-head { align-items: flex-start; flex-direction: column; } .tab-btn { padding: 9px 13px; } .card { padding: 16px; } .modal-content { padding: 22px; } }
     </style>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-database-compat.js"></script>
 </head>
 <body>
     <!-- 登录页面 -->
@@ -379,7 +383,22 @@
                         <label>店铺地址</label>
                         <input type="text" id="shopAddress" placeholder="请输入店铺地址">
                     </div>
-                    <button class="btn btn-primary" onclick="SalonApp.saveSettings()">保存设置</button>
+                    
+                    <div class="card" style="border:2px solid #4f46e5">
+                        <h2 style="color:#4f46e5">☁️ 云端同步</h2>
+                        <p style="color:#aaa;font-size:.9em;margin-bottom:15px">通过 GitHub 在手机、平板、电脑之间同步数据</p>
+                        <div class="form-group">
+                            <label>GitHub 访问令牌（Token）</label>
+                            <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                        </div>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+                            <button class="btn btn-primary" onclick="DataStore.syncToGitHub()">📤 上传到云端</button>
+                            <button class="btn btn-success" onclick="DataStore.syncFromGitHub()">📥 从云端下载</button>
+                        </div>
+                        <div id="syncStatus" style="font-size:.85em;color:#aaa;margin-top:8px"></div>
+                        <p class="hint">如何获取 Token？<a href="https://github.com/settings/tokens" target="_blank" style="color:#4f46e5">点此创建</a> → 勾选 repo 权限 → 生成后复制粘贴到上方</p>
+                    </div>
+<button class="btn btn-primary" onclick="SalonApp.saveSettings()">保存设置</button>
                     <button class="btn btn-success" onclick="SalonApp.exportData()">导出备份</button>
                     <button class="btn btn-warning" onclick="document.getElementById('backupFile').click()">恢复备份</button>
                     <button class="btn btn-danger" onclick="SalonApp.clearAllData()">清空所有数据</button>
@@ -588,7 +607,97 @@
                 HistoryManager.init();
                 this.startAutoSave();
 
-                window.addEventListener('beforeunload', function() { self.saveAll(); });
+                
+        // ==================== GitHub 云端同步 ====================
+        DataStore.getGitHubToken = function() {
+            return localStorage.getItem('github_sync_token') || '';
+        };
+        DataStore.setGitHubToken = function(token) {
+            localStorage.setItem('github_sync_token', token);
+        };
+        DataStore.setSyncStatus = function(msg, isError) {
+            var el = document.getElementById('syncStatus');
+            if (el) el.innerHTML = (isError ? '<span style="color:#e74c3c">❌ ' : '<span style="color:#27ae60">✅ ') + msg + '</span>';
+        };
+        DataStore.getAllData = function() {
+            var data = {};
+            Object.keys(this.cache).forEach(function(key) {
+                data[key] = this.cache[key];
+            }.bind(this));
+            return data;
+        };
+        DataStore.loadAllData = function(data) {
+            Object.keys(data).forEach(function(key) {
+                this.cache[key] = data[key] || (key === 'SETTINGS' ? {} : []);
+                var storageKey = CONFIG.STORAGE_KEYS[key];
+                if (storageKey) localStorage.setItem(storageKey, JSON.stringify(this.cache[key]));
+            }.bind(this));
+        };
+        DataStore.syncToGitHub = function() {
+            var token = document.getElementById('githubToken').value.trim();
+            if (!token) { this.setSyncStatus('请输入 GitHub Token', true); return; }
+            this.setGitHubToken(token);
+            this.setSyncStatus('正在上传...');
+            var data = JSON.stringify(this.getAllData());
+            var content = btoa(unescape(encodeURIComponent(data)));
+            var url = 'https://api.github.com/repos/lhaohan606-creator/gentlemans-edge/contents/data.json';
+            var self = this;
+            // First try to get the existing file to get its SHA
+            fetch(url, { headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' } })
+                .then(function(r) { return r.json().then(function(d) { return { status: r.status, data: d }; }); })
+                .then(function(resp) {
+                    var body = { message: '理发店数据同步 ' + new Date().toLocaleString(), content: content };
+                    if (resp.status === 200) body.sha = resp.data.sha;
+                    return fetch(url, {
+                        method: 'PUT',
+                        headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body)
+                    });
+                })
+                .then(function(r) { return r.json(); })
+                .then(function(d) {
+                    if (d.content) self.setSyncStatus('上传成功！可在其他设备下载');
+                    else self.setSyncStatus('上传失败: ' + (d.message || '未知错误'), true);
+                })
+                .catch(function(e) { self.setSyncStatus('网络错误: ' + e.message, true); });
+        };
+        DataStore.syncFromGitHub = function() {
+            var token = document.getElementById('githubToken').value.trim();
+            if (!token) { this.setSyncStatus('请输入 GitHub Token', true); return; }
+            this.setGitHubToken(token);
+            this.setSyncStatus('正在下载...');
+            var url = 'https://api.github.com/repos/lhaohan606-creator/gentlemans-edge/contents/data.json';
+            var self = this;
+            fetch(url, { headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' } })
+                .then(function(r) { return r.json(); })
+                .then(function(d) {
+                    if (d.content) {
+                        var decoded = decodeURIComponent(escape(atob(d.content)));
+                        var data = JSON.parse(decoded);
+                        self.loadAllData(data);
+                        // Save the token
+                        localStorage.setItem('github_sync_token', token);
+                        self.setSyncStatus('下载成功！数据已恢复');
+                        // Refresh all views
+                        if (typeof refreshAllViews === 'function') refreshAllViews();
+                    } else {
+                        self.setSyncStatus('下载失败: ' + (d.message || '云端暂无数据'), true);
+                    }
+                })
+                .catch(function(e) { self.setSyncStatus('网络错误: ' + e.message, true); });
+        };
+        // Load saved token on init
+        (function() {
+            var savedToken = localStorage.getItem('github_sync_token');
+            if (savedToken) {
+                setTimeout(function() {
+                    var inp = document.getElementById('githubToken');
+                    if (inp) inp.value = savedToken;
+                }, 500);
+            }
+        })();
+
+window.addEventListener('beforeunload', function() { self.saveAll(); });
             },
 
             get: function(type) {
@@ -617,7 +726,55 @@
                 Object.keys(changes).forEach(function(type) { self.setNoHistory(type, changes[type]); });
                 HistoryManager.push(this.createSnapshot(), description || '更新数据');
                 this.updateSaveStatus('已保存');
-            },
+            
+        // ==================== Firebase 云端同步 ====================
+        var CLOUD_SYNC = true;
+        var firebaseConfig = {
+            apiKey: "AIzaSyBBCTqS1JQZvFgTT8YtvWbhS8bnxEcS7AM",
+            authDomain: "lifadian-f312c.firebaseapp.com",
+            databaseURL: "https://lifadian-f312c-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "lifadian-f312c",
+            storageBucket: "lifadian-f312c.firebasestorage.app",
+            messagingSenderId: "66103907221",
+            appId: "1:66103907221:web:14b1a99008cc7bb6281c9c",
+            measurementId: "G-FB2Z1WPYVD"
+        };
+        try { firebase.initializeApp(firebaseConfig); } catch(e) {}
+        var dbRef = null;
+        try { dbRef = firebase.database().ref('/salon_data'); } catch(e) {}
+
+        // 修改 commit 方法，同步到云端
+        var _origCommit = DataStore.commit;
+        DataStore.commit = function(changes, description) {
+            _origCommit.call(this, changes, description);
+            if (CLOUD_SYNC && dbRef) {
+                var updates = {};
+                Object.keys(changes).forEach(function(type) {
+                    updates['/' + type] = this.cache[type];
+                }.bind(this));
+                dbRef.update(updates);
+            }
+        };
+
+        // 启动时从云端加载数据
+        (function() {
+            if (CLOUD_SYNC && dbRef) {
+                dbRef.once('value').then(function(snapshot) {
+                    var cloudData = snapshot.val();
+                    if (cloudData) {
+                        Object.keys(cloudData).forEach(function(key) {
+                            if (cloudData[key] !== null) {
+                                DataStore.cache[key] = JSON.parse(JSON.stringify(cloudData[key]));
+                                var storageKey = CONFIG.STORAGE_KEYS[key];
+                                if (storageKey) localStorage.setItem(storageKey, JSON.stringify(cloudData[key]));
+                            }
+                        });
+                        if (typeof refreshAllViews === 'function') refreshAllViews();
+                    }
+                }).catch(function() {});
+            }
+        })();
+},
 
             setNoHistory: function(type, data) {
                 this.cache[type] = cloneData(data);
