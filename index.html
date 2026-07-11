@@ -220,10 +220,10 @@
             <div class="header-bar">
                 <div>
                     <h1 id="appTitle">✂️ 我的理发店</h1>
-                    <p>离线经营助手 · 数据仅保存在当前浏览器</p>
+                    <p>理发店经营管理系统 · 数据自动云端同步 <span id="cloudSyncStatus" style="color:#27ae60;font-size:.85em">☁️</span></p>
                 </div>
                 <div>
-                    <span class="save-status" id="saveStatus">✅ 已保存</span>
+                    <span class="save-status" id="saveStatus">☁️ 已同步</span>
                     <button class="btn btn-sm btn-danger" onclick="SalonApp.logout()" style="margin-left:15px;">退出登录</button>
                 </div>
             </div>
@@ -743,7 +743,57 @@ window.addEventListener('beforeunload', function() { self.saveAll(); });
         var dbRef = null;
         try { dbRef = firebase.database().ref('/salon_data'); } catch(e) {}
 
-        // 修改 commit 方法，同步到云端
+        // 同步状态显示
+        function setSyncStatus(msg, type) {
+            var el = document.getElementById('cloudSyncStatus');
+            if (!el) return;
+            if (type === 'success') { el.innerHTML = '☁️ ' + msg; el.style.color = '#27ae60'; }
+            else if (type === 'loading') { el.innerHTML = '⟳ ' + msg; el.style.color = '#f39c12'; }
+            else if (type === 'error') { el.innerHTML = '⚠️ ' + msg; el.style.color = '#e74c3c'; }
+            else { el.innerHTML = '☁️ ' + msg; el.style.color = '#aaa'; }
+        }
+
+        // 同步到云端
+        function syncToCloud() {
+            if (!CLOUD_SYNC || !dbRef) { setSyncStatus('未连接', 'muted'); return false; }
+            setSyncStatus('同步中...', 'loading');
+            var allData = {};
+            Object.keys(DataStore.cache).forEach(function(key) {
+                if (key !== 'SETTINGS') allData['/' + key] = DataStore.cache[key];
+            });
+            dbRef.update(allData)
+                .then(function() { setSyncStatus('已同步', 'success'); })
+                .catch(function(e) { setSyncStatus('同步失败', 'error'); });
+            return true;
+        }
+
+        // 从云端加载
+        function loadFromCloud() {
+            if (!CLOUD_SYNC || !dbRef) return;
+            dbRef.once('value').then(function(snapshot) {
+                var cloudData = snapshot.val();
+                if (cloudData) {
+                    var hasData = false;
+                    Object.keys(cloudData).forEach(function(key) {
+                        if (cloudData[key] !== null) {
+                            DataStore.cache[key] = JSON.parse(JSON.stringify(cloudData[key]));
+                            var storageKey = CONFIG.STORAGE_KEYS[key];
+                            if (storageKey) localStorage.setItem(storageKey, JSON.stringify(cloudData[key]));
+                            hasData = true;
+                        }
+                    });
+                    if (hasData && typeof refreshAllViews === 'function') refreshAllViews();
+                    setSyncStatus('已同步', 'success');
+                } else {
+                    // 首次使用，上传本地数据到云端
+                    syncToCloud();
+                }
+            }).catch(function() {
+                setSyncStatus('未连接', 'muted');
+            });
+        }
+
+        // 修改 commit 方法，每次保存时自动同步到云端
         var _origCommit = DataStore.commit;
         DataStore.commit = function(changes, description) {
             _origCommit.call(this, changes, description);
@@ -752,28 +802,14 @@ window.addEventListener('beforeunload', function() { self.saveAll(); });
                 Object.keys(changes).forEach(function(type) {
                     updates['/' + type] = this.cache[type];
                 }.bind(this));
-                dbRef.update(updates);
+                dbRef.update(updates)
+                    .then(function() { setSyncStatus('已同步', 'success'); })
+                    .catch(function() { setSyncStatus('同步失败', 'error'); });
             }
         };
 
         // 启动时从云端加载数据
-        (function() {
-            if (CLOUD_SYNC && dbRef) {
-                dbRef.once('value').then(function(snapshot) {
-                    var cloudData = snapshot.val();
-                    if (cloudData) {
-                        Object.keys(cloudData).forEach(function(key) {
-                            if (cloudData[key] !== null) {
-                                DataStore.cache[key] = JSON.parse(JSON.stringify(cloudData[key]));
-                                var storageKey = CONFIG.STORAGE_KEYS[key];
-                                if (storageKey) localStorage.setItem(storageKey, JSON.stringify(cloudData[key]));
-                            }
-                        });
-                        if (typeof refreshAllViews === 'function') refreshAllViews();
-                    }
-                }).catch(function() {});
-            }
-        })();
+        loadFromCloud();
 },
 
             setNoHistory: function(type, data) {
