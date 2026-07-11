@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gentleman's Edge | 绥士理发馆</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Inter',sans-serif;color:#e8e0d4;background:#1a1614;line-height:1.6;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+ul{list-style:none}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+::selection{background:#c8a45c;color:#1a1614}
+h1,h2,h3,h4{font-family:'Playfair Display',serif;font-weight:700;line-height:1.2}
+h1{font-size:clamp(2.8rem,8vw,5.5rem);letter-spacing:0.02em}
+h2{font-size:clamp(2rem,5vw,3.2rem);margin-bottom:1rem}
+h3{font-size:clamp(1.3rem,3vw,1.8rem)}
+.section-subtitle{font-size:0.85rem;text-transform:uppercase;letter-spacing:3px;color:#c8a45c;margin-bottom:0.5rem;font-weight:600}
+.btn{display:inline-block;padding:14px 36px;font-size:0.9rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;border:none;cursor:pointer;transition:all .3s;position:relative}
+.btn-primary{background:#c8a45c;color:#1a1614}
+.btn-primary:hover{background:#dbb86a;transform:translateY(-2px);box-shadow:0 8px 30px rgba(200,164,92,.3)}
+.btn-outline{background:transparent;border:2px solid #c8a45c;color:#c8a45c}
+.btn-outline:hover{background:#c8a45c;color:#1a1614;transform:translateY(-2px)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:20px 0;transition:all .4s}
+.nav.scrolled{background:rgba(26,22,20,.95);padding:12px 0;box-shadow:0 2px 30px rgba(0,0,0,.3);backdrop-filter:blur(12px)}
+.nav .container{display:flex;justify-content:space-between;align-items:center}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:#c8a45c;letter-spacing:1px}
+.nav-logo span{color:#e8e0d4}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{font-size:.8rem;font-weight:500;text-transform:uppercase;letter-spacing:1.5px;position:relative;padding:4px 0;transition:color .3s}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:#c8a45c;transition:width .3s}
+.nav-links a:hover{color:#c8a45c}
+.nav-links a:hover::after{width:100%}
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+.nav-toggle span{width:28px;height:2px;background:#e8e0d4;transition:all .3s;border-radius:2px}
+.nav-toggle.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-toggle.active span:nth-child(2){opacity:0}
+.nav-toggle.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;background:#1a1614}
+.hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1585747861115-051b38d1e5f0?w=1920&q=80') center/cover no-repeat;opacity:.4;transform:scale(1.05);animation:heroZoom 20s ease infinite alternate}
+@keyframes heroZoom{0%{transform:scale(1.05)}to{transform:scale(1.15)}}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(26,22,20,.92) 0%,rgba(26,22,20,.6) 50%,rgba(26,22,20,.85) 100%)}
+.hero .container{position:relative;z-index:2;text-align:center}
+.hero h1{margin-bottom:.5rem;opacity:0;animation:fadeUp 1s .3s forwards}
+.hero h1 .accent{color:#c8a45c}
+.hero-tagline{font-size:clamp(1rem,2vw,1.25rem);color:#9a9086;margin-bottom:2.5rem;max-width:600px;margin-left:auto;margin-right:auto;opacity:0;animation:fadeUp 1s .6s forwards;font-weight:300}
+.hero-badges{display:flex;justify-content:center;gap:40px;margin-bottom:2.5rem;opacity:0;animation:fadeUp 1s .8s forwards}
+.hero-badge{text-align:center}
+.hero-badge .num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#c8a45c}
+.hero-badge .label{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;color:#9a9086;margin-top:2px}
+.hero .btn{opacity:0;animation:fadeUp 1s 1s forwards}
+.hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:2;color:#9a9086;font-size:.7rem;text-transform:uppercase;letter-spacing:2px;display:flex;flex-direction:column;align-items:center;gap:8px;animation:bounce 2s infinite}
+.hero-scroll .arrow{width:1px;height:30px;background:linear-gradient(to bottom,#9a9086,transparent)}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.section{padding:100px 0}
+.section-dark{background:#1a1614}
+.section-darker{background:#141110}
+.section-light{background:#1f1a17}
+.section-header{text-align:center;margin-bottom:60px}
+.section-header p{max-width:560px;margin:0 auto;color:#9a9086;font-size:1.05rem}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.about-image{position:relative;border-radius:4px;overflow:hidden;aspect-ratio:4/3}
+.about-image img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.about-image:hover img{transform:scale(1.03)}
+.about-image::after{content:'';position:absolute;inset:0;border:1px solid rgba(200,164,92,.15);border-radius:4px;pointer-events:none}
+.about-content h2{margin-bottom:.5rem}
+.about-content .lead{font-size:1.1rem;color:#c8a45c;margin-bottom:1.5rem;font-weight:400;font-style:italic}
+.about-content p{color:#9a9086;margin-bottom:1.2rem;font-size:.95rem}
+.about-signature{font-family:'Playfair Display',serif;font-size:1.4rem;color:#c8a45c;margin-top:1.5rem;font-style:italic}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.service-card{background:#1f1a17;padding:40px 32px;border:1px solid rgba(200,164,92,.08);transition:all .4s;position:relative;overflow:hidden}
+.service-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:#c8a45c;transition:height .4s}
+.service-card:hover::before{height:100%}
+.service-card:hover{transform:translateY(-4px);border-color:rgba(200,164,92,.2);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.service-icon{font-size:2.2rem;margin-bottom:1.2rem;color:#c8a45c}
+.service-card h3{margin-bottom:.8rem;font-size:1.3rem}
+.service-card p{color:#9a9086;font-size:.9rem;margin-bottom:1.2rem}
+.service-price{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:#c8a45c}
+.service-price small{font-size:.8rem;font-weight:400;color:#9a9086;font-family:'Inter',sans-serif}
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.gallery-item{position:relative;overflow:hidden;border-radius:3px;aspect-ratio:3/4;cursor:pointer}
+.gallery-item:nth-child(3){aspect-ratio:3/3;grid-column:span 2;grid-row:span 2}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.gallery-item:hover img{transform:scale(1.08)}
+.gallery-item .overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,22,20,.7) 0%,transparent 60%);opacity:0;transition:opacity .4s;display:flex;align-items:flex-end;padding:20px}
+.gallery-item:hover .overlay{opacity:1}
+.gallery-item .overlay span{color:#e8e0d4;font-size:.85rem;font-weight:500}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+.team-card{text-align:center;padding:30px 20px;background:#1f1a17;border:1px solid rgba(200,164,92,.08);transition:all .4s}
+.team-card:hover{transform:translateY(-4px);border-color:rgba(200,164,92,.2);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.team-avatar{width:140px;height:140px;border-radius:50%;object-fit:cover;margin:0 auto 1.2rem;border:3px solid rgba(200,164,92,.2);transition:border-color .4s}
+.team-card:hover .team-avatar{border-color:#c8a45c}
+.team-card h3{font-size:1.2rem;margin-bottom:.3rem}
+.team-card .role{color:#c8a45c;font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.8rem}
+.team-card p{color:#9a9086;font-size:.88rem}
+.testimonials{background:linear-gradient(135deg,#1f1a17 0%,#141110 100%);position:relative}
+.testimonials::before{content:'"';position:absolute;top:40px;left:40px;font-family:'Playfair Display',serif;font-size:10rem;color:rgba(200,164,92,.06);line-height:1;pointer-events:none}
+.testimonial-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:30px}
+.testimonial-card{background:rgba(255,255,255,.03);padding:36px;border:1px solid rgba(200,164,92,.06);border-radius:4px}
+.testimonial-card .stars{color:#c8a45c;font-size:.9rem;margin-bottom:1rem;letter-spacing:2px}
+.testimonial-card blockquote{color:#b0a89e;font-size:.95rem;font-style:italic;line-height:1.7;margin-bottom:1.2rem}
+.testimonial-card .author{font-family:'Playfair Display',serif;color:#e8e0d4;font-size:1rem}
+.testimonial-card .author span{display:block;font-family:'Inter',sans-serif;font-size:.78rem;color:#9a9086;font-style:normal;margin-top:2px}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px}
+.contact-info h3{font-size:1.6rem;margin-bottom:1.2rem}
+.contact-info p{color:#9a9086;margin-bottom:2rem;font-size:.95rem}
+.contact-detail{display:flex;gap:16px;margin-bottom:24px;align-items:flex-start}
+.contact-detail .icon{color:#c8a45c;font-size:1.2rem;min-width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(200,164,92,.15);border-radius:50%}
+.contact-detail .detail h4{font-size:.95rem;margin-bottom:2px}
+.contact-detail .detail span{color:#9a9086;font-size:.88rem}
+.contact-hours{margin-top:16px;padding-top:20px;border-top:1px solid rgba(200,164,92,.1)}
+.contact-hours h4{font-size:.95rem;margin-bottom:8px;color:#c8a45c}
+.contact-hours .hours-row{display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem;color:#9a9086}
+.contact-form{background:#1f1a17;padding:40px;border:1px solid rgba(200,164,92,.08);border-radius:4px}
+.contact-form h3{font-size:1.4rem;margin-bottom:1.5rem}
+.form-group{margin-bottom:18px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:14px 16px;background:#141110;border:1px solid rgba(200,164,92,.12);color:#e8e0d4;font-family:'Inter',sans-serif;font-size:.9rem;border-radius:3px;transition:border-color .3s;outline:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#c8a45c}
+.form-group textarea{height:120px;resize:vertical}
+.form-group input::placeholder,.form-group textarea::placeholder{color:#6a625a}
+.form-group select option{background:#141110;color:#e8e0d4}
+.contact-form .btn{width:100%}
+.footer{background:#0e0c0a;padding:60px 0 30px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand .nav-logo{margin-bottom:1rem}
+.footer-brand p{color:#6a625a;font-size:.88rem;max-width:300px}
+.footer h4{font-size:.85rem;text-transform:uppercase;letter-spacing:1.5px;color:#c8a45c;margin-bottom:1rem}
+.footer-links li{margin-bottom:10px}
+.footer-links a{color:#6a625a;font-size:.88rem;transition:color .3s}
+.footer-links a:hover{color:#c8a45c}
+.footer-social{display:flex;gap:12px;margin-top:1rem}
+.footer-social a{width:40px;height:40px;border:1px solid rgba(200,164,92,.12);display:flex;align-items:center;justify-content:center;color:#6a625a;transition:all .3s;border-radius:50%;font-size:.9rem}
+.footer-social a:hover{color:#c8a45c;border-color:#c8a45c;transform:translateY(-2px)}
+.footer-bottom{border-top:1px solid rgba(200,164,92,.06);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:#6a625a}
+.reveal{opacity:0;transform:translateY(40px);transition:all .7s cubic-bezier(.25,.46,.45,.94)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+@media(max-width:992px){
+  .about-grid,.contact-grid{grid-template-columns:1fr}
+  .services-grid{grid-template-columns:repeat(2,1fr)}
+  .gallery-grid{grid-template-columns:repeat(3,1fr)}
+  .gallery-item:nth-child(3){aspect-ratio:3/4;grid-column:auto;grid-row:auto}
+  .team-grid{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:30px}
+  .testimonial-grid{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .nav-links{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:rgba(20,17,16,.98);flex-direction:column;padding:100px 40px 40px;gap:24px;transition:right .4s;backdrop-filter:blur(20px)}
+  .nav-links.open{right:0}
+  .nav-toggle{display:flex}
+  .services-grid{grid-template-columns:1fr}
+  .gallery-grid{grid-template-columns:repeat(2,1fr)}
+  .team-grid{grid-template-columns:1fr}
+  .hero-badges{flex-direction:column;gap:16px}
+  .contact-form{padding:28px 20px}
+  .section{padding:60px 0}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;gap:8px;text-align:center}
+  .testimonials::before{display:none}
+}
+@media(max-width:480px){
+  .gallery-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .gallery-item{aspect-ratio:1/1}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="navbar">
+  <div class="container">
+    <a href="#" class="nav-logo">Gentleman's <span>Edge</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="#about">关于我们</a>
+      <a href="#services">服务</a>
+      <a href="#gallery">作品</a>
+      <a href="#team">团队</a>
+      <a href="#contact">预约</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav><!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <h1 lang="en"><span class="accent">Gentleman's</span> Edge</h1>
+    <p class="hero-tagline">经典手艺 · 现代审美 —— 每一位绥士都值得被认真对待</p>
+    <div class="hero-badges">
+      <div class="hero-badge"><div class="num">15+</div><div class="label">年经验</div></div>
+      <div class="hero-badge"><div class="num">5000+</div><div class="label">满意客户</div></div>
+      <div class="hero-badge"><div class="num">100%</div><div class="label">手工精剪</div></div>
+    </div>
+    <a href="#contact" class="btn btn-primary">立即预约</a>
+  </div>
+  <div class="hero-scroll">
+    <span>向下滚动</span>
+    <div class="arrow"></div>
+  </div>
+</section>
+
+<section class="section section-dark" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-image reveal">
+        <img src="https://images.unsplash.com/photo-1599351431202-1e0f0139f4e0?w=800&q=80" alt="理发工具" loading="lazy">
+      </div>
+      <div class="about-content reveal reveal-delay-1">
+        <div class="section-subtitle">Our Story</div>
+        <h2>传统手艺<br>现代演绎</h2>
+        <p class="lead">"每一次落剪，都是对细节的尊重。"</p>
+        <p>Gentleman's Edge 创立于 2010 年，我们坚信理发不仅是手艺，更是一种仪式感。从经典油头到现代渐变，我们用传统工具结合当代审美，为每一位客人打造专属风格。</p>
+        <p>在我们的店里，没有流水线的速剪，只有一杯威士忌、一首爵士乐，和一把传承了半个世纪的剪刀。我们只做一件事，并把它做到极致。</p>
+        <div class="about-signature">— 陈师傅 &amp; 团队</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-darker" id="services">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-subtitle">Services &amp; Pricing</div>
+      <h2>精选服务</h2>
+      <p>每一项服务都经过精心设计，价格透明，品质如一</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon">✂️</div>
+        <h3>经典理发</h3>
+        <p>专业精剪 + 造型，适合日常通勤与商务场合</p>
+        <div class="service-price">¥168 <small>/ 次</small></div>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon">U0001f488</div>
+        <h3>油头造型</h3>
+        <p>传统 pompadour / slick back，复古经典风格重塑</p>
+        <div class="service-price">¥228 <small>/ 次</small></div>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon">U0001f9d4</div>
+        <h3>胡须护理</h3>
+        <p>热毛巾敷面 + 精准修型 + 须后护理</p>
+        <div class="service-price">¥128 <small>/ 次</small></div>
+      </div>
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon">✨</div>
+        <h3>渐变精剪</h3>
+        <p>Skin fade / Mid fade / High fade，过渡自然无痕</p>
+        <div class="service-price">¥198 <small>/ 次</small></div>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon">U0001f451</div>
+        <h3>尊享全套</h3>
+        <p>理发 + 胡须 + 面部护理 + 头部按摩，90分钟极致体验</p>
+        <div class="service-price">¥388 <small>/ 次</small></div>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon">U0001f9d2</div>
+        <h3>儿童理发</h3>
+        <p>12岁以下儿童专属理发，耐心细致，氛围轻松</p>
+        <div class="service-price">¥98 <small>/ 次</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-light" id="gallery">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-subtitle">Our Works</div>
+      <h2>作品展示</h2>
+      <p>每一张照片背后，都是一次用心的创作</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1567894340315-735d7c361db7?w=600&q=80" alt="男士理发" loading="lazy"><div class="overlay"><span>渐变精剪</span></div></div>
+      <div class="gallery-item reveal reveal-delay-1"><img src="https://images.unsplash.com/photo-1621605815971-fbc98d665666?w=600&q=80" alt="理发造型" loading="lazy"><div class="overlay"><span>经典油头</span></div></div>
+      <div class="gallery-item reveal reveal-delay-2"><img src="https://images.unsplash.com/photo-1596728325488-58c87691e9af?w=800&q=80" alt="理发店内部" loading="lazy"><div class="overlay"><span>店内环境</span></div></div>
+      <div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1634302085916-2431c1fe0d8a?w=600&q=80" alt="胡须造型" loading="lazy"><div class="overlay"><span>胡须造型</span></div></div>
+      <div class="gallery-item reveal reveal-delay-1"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&q=80" alt="理发工具" loading="lazy"><div class="overlay"><span>经典工具</span></div></div>
+      <div class="gallery-item reveal reveal-delay-2"><img src="https://images.unsplash.com/photo-1596728325488-58c87691e9af?w=800&q=80" alt="理发过程" loading="lazy"><div class="overlay"><span>精剪时刻</span></div></div>
+      <div class="gallery-item reveal reveal-delay-3"><img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&q=80" alt="男士发型" loading="lazy"><div class="overlay"><span>时尚渐变</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section testimonials" id="testimonials">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-subtitle">Testimonials</div>
+      <h2>客人的声音</h2>
+    </div>
+    <div class="testimonial-grid">
+      <div class="testimonial-card reveal">
+        <div class="stars">★★★★★</div>
+        <blockquote>"在 Gentleman's Edge 理发是一种享受。从进门的那杯威士忌到最后一剪，每个细节都无可挑剔。渐变过渡太自然了，朋友都问我哪里剪的。"</blockquote>
+        <div class="author">张先生 <span>常客 · 3年</span></div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-1">
+        <div class="stars">★★★★★</div>
+        <blockquote>"第一次体验油头造型就被圈粉了。老师傅的手艺真是没话说，复古感和时尚感拿捏得恰到好处。已经推荐给全公司同事了。"</blockquote>
+        <div class="author">李先生 <span>新客户 · 2024</span></div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-2">
+        <div class="stars">★★★★★</div>
+        <blockquote>"带孩子来剪头发，师傅特别有耐心，小朋友居然全程没闹。剪完效果也很棒，以后就认准这家了。"</blockquote>
+        <div class="author">王女士 <span>客户家长</span></div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-3">
+        <div class="stars">★★★★★</div>
+        <blockquote>"每隔三周必来报道。胡须护理配合理发简直是男生的spa体验。环境好、服务好、技术更好。"</blockquote>
+        <div class="author">刘先生 <span>会员 · 金卡</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-light" id="team">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-subtitle">Our Team</div>
+      <h2>专业团队</h2>
+      <p>每一位理发师都是经过严格筛选的手艺人</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80" alt="陈师傅" class="team-avatar" loading="lazy">
+        <h3>陈志强</h3>
+        <div class="role">创始人 / 首席理发师</div>
+        <p>15年从业经验，师从日本名师山本孝之，精通经典油头与渐变技术。</p>
+      </div>
+      <div class="team-card reveal reveal-delay-1">
+        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80" alt="李师傅" class="team-avatar" loading="lazy">
+        <h3>李明远</h3>
+        <div class="role">高级理发师</div>
+        <p>10年经验，擅长现代渐变设计与胡须造型，风格偏年轻时尚。</p>
+      </div>
+      <div class="team-card reveal reveal-delay-2">
+        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80" alt="王师傅" class="team-avatar" loading="lazy">
+        <h3>王浩</h3>
+        <div class="role">资深理发师</div>
+        <p>8年经验，专注经典理发与儿童理发，以耐心细致著称。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-darker" id="contact">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-subtitle">Book Now</div>
+      <h2>预约体验</h2>
+      <p>预约优先，也可接受 walk-in。我们期待您的到来</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <h3>联系我们</h3>
+        <p>无论您是老客人还是第一次来，我们都欢迎。留下信息，我们会尽快与您确认。</p>
+        <div class="contact-detail">
+          <i class="icon">U0001f4cd</i>
+          <div class="detail">
+            <h4>地址</h4>
+            <span>上海市静安区南京西路1788号<br>1788广场 B1-12</span>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <i class="icon">U0001f4de</i>
+          <div class="detail">
+            <h4>电话</h4>
+            <span>021-6288 8888</span>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <i class="icon">✉️</i>
+          <div class="detail">
+            <h4>邮箱</h4>
+            <span>hello@gentlemansedge.cn</span>
+          </div>
+        </div>
+        <div class="contact-hours">
+          <h4>营业时间</h4>
+          <div class="hours-row"><span>周一 — 周五</span><span>10:00 — 21:00</span></div>
+          <div class="hours-row"><span>周六 — 周日</span><span>09:00 — 22:00</span></div>
+          <div class="hours-row" style="color:#c8a45c"><span>法定节假日</span><span>10:00 — 18:00</span></div>
+        </div>
+      </div>
+      <form class="contact-form reveal reveal-delay-1" id="bookingForm">
+        <h3>在线预约</h3>
+        <div class="form-group">
+          <input type="text" placeholder="您的姓名" required>
+        </div>
+        <div class="form-group">
+          <input type="tel" placeholder="手机号码" required>
+        </div>
+        <div class="form-group">
+          <select required>
+            <option value="">选择服务</option>
+            <option>经典理发 ¥168</option>
+            <option>油头造型 ¥228</option>
+            <option>胡须护理 ¥128</option>
+            <option>渐变精剪 ¥198</option>
+            <option>尊享全套 ¥388</option>
+            <option>儿童理发 ¥98</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <input type="date" required>
+        </div>
+        <div class="form-group">
+          <input type="time" required>
+        </div>
+        <div class="form-group">
+          <textarea placeholder="备注（如：指定理发师、特殊需求等）"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">提交预约</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo">Gentleman's <span>Edge</span></div>
+        <p>经典手艺与现代审美的完美融合。每一位绥士都值得被认真对待。</p>
+        <div class="footer-social">
+          <a href="#" aria-label="微信">U0001f4ac</a>
+          <a href="#" aria-label="小红书">U0001f4d5</a>
+          <a href="#" aria-label="大众点评">⭐</a>
+          <a href="#" aria-label="抖音">U0001f3b5</a>
+        </div>
+      </div>
+      <div>
+        <h4>快捷链接</h4>
+        <ul class="footer-links">
+          <li><a href="#about">关于我们</a></li>
+          <li><a href="#services">服务项目</a></li>
+          <li><a href="#gallery">作品展示</a></li>
+          <li><a href="#team">我们的团队</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>服务项目</h4>
+        <ul class="footer-links">
+          <li><a href="#services">经典理发</a></li>
+          <li><a href="#services">油头造型</a></li>
+          <li><a href="#services">胡须护理</a></li>
+          <li><a href="#services">尊享全套</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>营业时间</h4>
+        <ul class="footer-links" style="font-size:0.88rem;color:#6a625a">
+          <li>周一至周五 10:00-21:00</li>
+          <li>周末 09:00-22:00</li>
+          <li>节假日 10:00-18:00</li>
+          <li style="margin-top:8px"><a href="#contact">立即预约 →</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Gentleman's Edge. All rights reserved.</span>
+      <span>Designed with ✂️ in Shanghai</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const navbar=document.getElementById("navbar");
+window.addEventListener("scroll",()=>{window.pageYOffset>60?navbar.classList.add("scrolled"):navbar.classList.remove("scrolled")});
+const navToggle=document.getElementById("navToggle"),navLinks=document.getElementById("navLinks");
+navToggle.addEventListener("click",()=>{navToggle.classList.toggle("active"),navLinks.classList.toggle("open")});
+navLinks.querySelectorAll("a").forEach(l=>l.addEventListener("click",()=>{navToggle.classList.remove("active"),navLinks.classList.remove("open")}));
+const ro=new IntersectionObserver(e=>{e.forEach(e=>{e.isIntersecting&&(e.target.classList.add("visible"),ro.unobserve(e.target))})},{threshold:.1});
+document.querySelectorAll(".reveal").forEach(e=>ro.observe(e));
+document.getElementById("bookingForm").addEventListener("submit",function(e){e.preventDefault();const btn=this.querySelector("button[type=submit]");btn.textContent="提交中...",btn.disabled=!0,setTimeout(()=>{btn.textContent="预约成功 \u2713",btn.style.background="#2d8a4e",setTimeout(()=>{btn.textContent="提交预约",btn.disabled=!1,btn.style.background="",this.reset()},2500)},1200)});
+</script>
+</body>
+</html>
