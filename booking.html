@@ -43,9 +43,11 @@
     <form id="bookingForm" novalidate>
       <div class="field"><label>您的姓名 *</label><input id="bName" maxlength="20" placeholder="请输入姓名" required></div>
       <div class="field"><label>手机号</label><input id="bPhone" type="tel" maxlength="20" placeholder="便于到店提醒（选填）"></div>
-      <div class="field"><label>服务项目 *</label><select id="bService"></select></div>
+      <div class="field"><label>服务项目 *</label><select id="bService"></select>
+        <div id="bServiceOtherWrap" style="display:none;margin-top:8px"><label style="margin-bottom:4px">请填写服务项目</label><input id="bServiceOther" maxlength="30" placeholder="例如：洗剪吹"></div></div>
       <div class="field"><label>预约时间 *</label><input id="bDatetime" type="datetime-local" required></div>
-      <div class="field"><label>指定发型师（可选）</label><select id="bStaff"></select></div>
+      <div class="field"><label>指定发型师（可选）</label><select id="bStaff"></select>
+        <div id="bStaffOtherWrap" style="display:none;margin-top:8px"><label style="margin-bottom:4px">请填写发型师姓名</label><input id="bStaffOther" maxlength="20" placeholder="例如：阿杰"></div></div>
       <div class="field"><label>备注</label><textarea id="bNote" rows="2" maxlength="200" placeholder="例如：需要洗剪吹，到店前电话确认"></textarea></div>
       <button type="submit" class="submit-btn" id="bSubmit">提交预约</button>
     </form>
@@ -114,6 +116,7 @@ function esc(s) {
 function fmtMoney(n) { return '¥' + parseFloat(n || 0).toFixed(2); }
 
 var loaded = { services: [], staff: [], settings: {} };
+var loadFailed = false;
 
 function loadShopData() {
   var el = document.getElementById('loadError');
@@ -123,12 +126,12 @@ function loadShopData() {
     document.getElementById('footHint').textContent = '您也可以直接到店咨询预约';
   }
   var tasks = [
-    httpGet('/salon_data/SERVICES').then(function(v) { loaded.services = parseItems(v); }).catch(function() { loaded.services = []; }),
-    httpGet('/salon_data/STAFF').then(function(v) { loaded.staff = parseItems(v); }).catch(function() { loaded.staff = []; }),
-    httpGet('/salon_data/SETTINGS').then(function(v) { loaded.settings = (v && typeof v === 'object') ? v : {}; }).catch(function() { loaded.settings = {}; })
+    httpGet('/salon_data/SERVICES').then(function(v) { loaded.services = parseItems(v); }).catch(function() { loadFailed = true; }),
+    httpGet('/salon_data/STAFF').then(function(v) { loaded.staff = parseItems(v); }).catch(function() { loadFailed = true; }),
+    httpGet('/salon_data/SETTINGS').then(function(v) { loaded.settings = (v && typeof v === 'object') ? v : {}; }).catch(function() { loadFailed = true; })
   ];
   Promise.all(tasks).then(function() {
-    if (!loaded.services.length && !loaded.staff.length && !Object.keys(loaded.settings).length) {
+    if (loadFailed) {
       showLoadError('⚠️ 暂时无法连接预约系统，请稍后再试，或直接到店 / 致电咨询。');
     }
     var st = loaded.settings;
@@ -144,11 +147,17 @@ function loadShopData() {
     });
     svcHtml += '<option value="other">其他（我来说明）</option>';
     svcSel.innerHTML = svcHtml;
+    svcSel.addEventListener('change', function() {
+      document.getElementById('bServiceOtherWrap').style.display = svcSel.value === 'other' ? 'block' : 'none';
+    });
     var stfSel = document.getElementById('bStaff');
     var stfHtml = '<option value="">不指定</option>';
     loaded.staff.forEach(function(s) { if (s && s.name) stfHtml += '<option value="' + esc(s.name) + '">' + esc(s.name) + '</option>'; });
     stfHtml += '<option value="other">其他（我来说明）</option>';
     stfSel.innerHTML = stfHtml;
+    stfSel.addEventListener('change', function() {
+      document.getElementById('bStaffOtherWrap').style.display = stfSel.value === 'other' ? 'block' : 'none';
+    });
   });
 }
 
@@ -169,6 +178,8 @@ function resetForm() {
   document.getElementById('bNote').value = '';
   document.getElementById('bService').value = '';
   document.getElementById('bStaff').value = '';
+  document.getElementById('bServiceOtherWrap').style.display = 'none';
+  document.getElementById('bStaffOtherWrap').style.display = 'none';
   setMinDatetime();
 }
 
@@ -177,9 +188,9 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
   var name = document.getElementById('bName').value.trim();
   var phone = document.getElementById('bPhone').value.trim();
   var serviceSel = document.getElementById('bService');
-  var serviceName = serviceSel.value === 'other' ? '' : serviceSel.value;
+  var serviceName = serviceSel.value === 'other' ? document.getElementById('bServiceOther').value.trim() : serviceSel.value;
   var staffSel = document.getElementById('bStaff');
-  var staffName = staffSel.value === 'other' ? '' : staffSel.value;
+  var staffName = staffSel.value === 'other' ? document.getElementById('bStaffOther').value.trim() : staffSel.value;
   var datetime = document.getElementById('bDatetime').value;
   var note = document.getElementById('bNote').value.trim();
 
