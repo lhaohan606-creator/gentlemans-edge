@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>在线预约</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif; background:linear-gradient(160deg,#f6f7fb 0%,#eef1fa 100%); min-height:100vh; color:#172033; }
+  .page { max-width:560px; margin:0 auto; padding:20px 16px 40px; }
+  .hero { background:radial-gradient(circle at 12% 8%, rgba(255,255,255,.18), transparent 24%), linear-gradient(120deg,#312e81,#4f46e5 57%,#0ea5a0); color:#fff; border-radius:18px; padding:26px 22px; box-shadow:0 10px 30px rgba(49,46,129,.25); margin-bottom:18px; }
+  .hero h1 { font-size:1.5rem; margin-bottom:4px; }
+  .hero p { opacity:.9; font-size:.92rem; line-height:1.6; }
+  .card { background:#fff; border:1px solid #e7e9f2; border-radius:16px; padding:22px; box-shadow:0 6px 20px rgba(31,41,55,.06); }
+  .card h2 { font-size:1.05rem; margin-bottom:16px; color:#172033; }
+  .field { margin-bottom:14px; }
+  .field label { display:block; font-size:.88rem; font-weight:600; color:#4b5563; margin-bottom:6px; }
+  .field input, .field select, .field textarea { width:100%; padding:12px; border:1px solid #d9ddea; border-radius:10px; font-size:1rem; background:#fff; color:#172033; outline:none; transition:border-color .2s; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color:#4f46e5; box-shadow:0 0 0 3px rgba(79,70,229,.12); }
+  .submit-btn { width:100%; padding:14px; border:none; border-radius:12px; background:linear-gradient(120deg,#4f46e5,#0ea5a0); color:#fff; font-size:1.05rem; font-weight:700; cursor:pointer; box-shadow:0 8px 20px rgba(79,70,229,.3); }
+  .submit-btn:disabled { opacity:.6; cursor:not-allowed; }
+  .ok-box { text-align:center; padding:18px 0; }
+  .ok-icon { font-size:3.4rem; }
+  .ok-box h3 { margin:10px 0 6px; font-size:1.3rem; }
+  .summary { background:#f5f7ff; border-radius:12px; padding:16px; text-align:left; margin:14px 0; line-height:2; font-size:.95rem; }
+  .summary b { color:#3f3b8f; }
+  .err { background:#fee2e2; color:#b91c1c; border-radius:10px; padding:12px 14px; font-size:.9rem; margin-bottom:14px; line-height:1.7; }
+  .hint { color:#6b7280; font-size:.82rem; margin-top:12px; text-align:center; }
+  .btn-again { width:100%; padding:12px; border:1px solid #d9ddea; border-radius:10px; background:#fff; color:#4f46e5; font-size:.95rem; cursor:pointer; }
+  .loading-note { text-align:center; color:#6b7280; font-size:.9rem; padding:8px 0 4px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hero">
+    <h1 id="shopTitle">✂️ 我的理发店</h1>
+    <p id="shopInfo">在线预约 · 到店即享</p>
+  </div>
+
+  <div class="card" id="formCard">
+    <h2>📅 预约到店时间</h2>
+    <div class="err" id="loadError" style="display:none"></div>
+    <form id="bookingForm" novalidate>
+      <div class="field"><label>您的姓名 *</label><input id="bName" maxlength="20" placeholder="请输入姓名" required></div>
+      <div class="field"><label>手机号</label><input id="bPhone" type="tel" maxlength="20" placeholder="便于到店提醒（选填）"></div>
+      <div class="field"><label>服务项目 *</label><select id="bService"></select></div>
+      <div class="field"><label>预约时间 *</label><input id="bDatetime" type="datetime-local" required></div>
+      <div class="field"><label>指定发型师（可选）</label><select id="bStaff"></select></div>
+      <div class="field"><label>备注</label><textarea id="bNote" rows="2" maxlength="200" placeholder="例如：需要洗剪吹，到店前电话确认"></textarea></div>
+      <button type="submit" class="submit-btn" id="bSubmit">提交预约</button>
+    </form>
+    <p class="hint" id="footHint">提交后我们会第一时间收到您的预约</p>
+  </div>
+
+  <div class="card" id="resultCard" style="display:none">
+    <div class="ok-box">
+      <div class="ok-icon">✅</div>
+      <h3>预约成功！</h3>
+      <p style="color:#6b7280;font-size:.9rem">我们已收到您的预约，请按时到店</p>
+      <div class="summary" id="resultSummary"></div>
+      <button class="btn-again" onclick="resetForm()">再预约一次</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var DB = 'https://lifadian-f312c-default-rtdb.asia-southeast1.firebasedatabase.app';
+
+function httpGet(path) {
+  return new Promise(function(resolve, reject) {
+    var x = new XMLHttpRequest();
+    x.open('GET', DB + path + '.json', true);
+    x.timeout = 15000;
+    x.onload = function() {
+      if (x.status >= 200 && x.status < 300) {
+        try { resolve(JSON.parse(x.responseText)); } catch (e) { resolve(null); }
+      } else reject(new Error('HTTP ' + x.status));
+    };
+    x.onerror = function() { reject(new Error('network')); };
+    x.ontimeout = function() { reject(new Error('timeout')); };
+    x.send();
+  });
+}
+
+function httpPost(path, body) {
+  return new Promise(function(resolve, reject) {
+    var x = new XMLHttpRequest();
+    x.open('POST', DB + path + '.json', true);
+    x.timeout = 15000;
+    x.setRequestHeader('Content-Type', 'application/json');
+    x.onload = function() {
+      if (x.status >= 200 && x.status < 300) {
+        try { resolve(JSON.parse(x.responseText)); } catch (e) { resolve(null); }
+      } else reject(new Error('HTTP ' + x.status));
+    };
+    x.onerror = function() { reject(new Error('network')); };
+    x.ontimeout = function() { reject(new Error('timeout')); };
+    x.send(JSON.stringify(body));
+  });
+}
+
+function parseItems(val) {
+  if (Array.isArray(val)) return val;
+  if (val && typeof val === 'object' && Array.isArray(val.items)) return val.items;
+  return [];
+}
+
+function esc(s) {
+  return String(s === undefined || s === null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
+function fmtMoney(n) { return '¥' + parseFloat(n || 0).toFixed(2); }
+
+var loaded = { services: [], staff: [], settings: {} };
+
+function loadShopData() {
+  var el = document.getElementById('loadError');
+  function showLoadError(msg) {
+    el.style.display = 'block';
+    el.textContent = msg;
+    document.getElementById('footHint').textContent = '您也可以直接到店咨询预约';
+  }
+  var tasks = [
+    httpGet('/salon_data/SERVICES').then(function(v) { loaded.services = parseItems(v); }).catch(function() { loaded.services = []; }),
+    httpGet('/salon_data/STAFF').then(function(v) { loaded.staff = parseItems(v); }).catch(function() { loaded.staff = []; }),
+    httpGet('/salon_data/SETTINGS').then(function(v) { loaded.settings = (v && typeof v === 'object') ? v : {}; }).catch(function() { loaded.settings = {}; })
+  ];
+  Promise.all(tasks).then(function() {
+    if (!loaded.services.length && !loaded.staff.length && !Object.keys(loaded.settings).length) {
+      showLoadError('⚠️ 暂时无法连接预约系统，请稍后再试，或直接到店 / 致电咨询。');
+    }
+    var st = loaded.settings;
+    if (st.shopName) document.getElementById('shopTitle').textContent = '✂️ ' + st.shopName;
+    var info = [];
+    if (st.shopPhone) info.push('☎ ' + st.shopPhone);
+    if (st.shopAddress) info.push('📍 ' + st.shopAddress);
+    if (info.length) document.getElementById('shopInfo').textContent = info.join(' · ') + ' · 在线预约';
+    var svcSel = document.getElementById('bService');
+    var svcHtml = '<option value="">请选择服务项目</option>';
+    loaded.services.forEach(function(s) {
+      if (s && s.name) svcHtml += '<option value="' + esc(s.name) + '">' + esc(s.name) + (s.price ? ' · ' + fmtMoney(s.price) : '') + '</option>';
+    });
+    svcHtml += '<option value="other">其他（我来说明）</option>';
+    svcSel.innerHTML = svcHtml;
+    var stfSel = document.getElementById('bStaff');
+    var stfHtml = '<option value="">不指定</option>';
+    loaded.staff.forEach(function(s) { if (s && s.name) stfHtml += '<option value="' + esc(s.name) + '">' + esc(s.name) + '</option>'; });
+    stfHtml += '<option value="other">其他（我来说明）</option>';
+    stfSel.innerHTML = stfHtml;
+  });
+}
+
+function setMinDatetime() {
+  var d = new Date(Date.now() + 30 * 60 * 1000);
+  var pad = function(n) { return String(n).padStart(2, '0'); };
+  var val = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  var inp = document.getElementById('bDatetime');
+  inp.min = val;
+  if (!inp.value) inp.value = val;
+}
+
+function resetForm() {
+  document.getElementById('resultCard').style.display = 'none';
+  document.getElementById('formCard').style.display = 'block';
+  document.getElementById('bName').value = '';
+  document.getElementById('bPhone').value = '';
+  document.getElementById('bNote').value = '';
+  document.getElementById('bService').value = '';
+  document.getElementById('bStaff').value = '';
+  setMinDatetime();
+}
+
+document.getElementById('bookingForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var name = document.getElementById('bName').value.trim();
+  var phone = document.getElementById('bPhone').value.trim();
+  var serviceSel = document.getElementById('bService');
+  var serviceName = serviceSel.value === 'other' ? '' : serviceSel.value;
+  var staffSel = document.getElementById('bStaff');
+  var staffName = staffSel.value === 'other' ? '' : staffSel.value;
+  var datetime = document.getElementById('bDatetime').value;
+  var note = document.getElementById('bNote').value.trim();
+
+  var errEl = document.getElementById('loadError');
+  errEl.style.display = 'none';
+  if (!name) { errEl.textContent = '请填写您的姓名'; errEl.style.display = 'block'; return; }
+  if (!serviceName) { errEl.textContent = '请选择服务项目，或在服务项目里选「其他」后填写备注'; errEl.style.display = 'block'; return; }
+  if (!datetime) { errEl.textContent = '请选择预约时间'; errEl.style.display = 'block'; return; }
+  var d = new Date(datetime);
+  if (isNaN(d.getTime()) || d.getTime() < Date.now()) { errEl.textContent = '预约时间需要晚于当前时间'; errEl.style.display = 'block'; return; }
+
+  var btn = document.getElementById('bSubmit');
+  btn.disabled = true;
+  btn.textContent = '正在提交…';
+  var now = new Date().toISOString();
+  httpPost('/bookings', {
+    name: name,
+    phone: phone,
+    serviceName: serviceName,
+    staffName: staffName,
+    datetime: datetime,
+    note: note,
+    status: '待确认',
+    source: '扫码预约',
+    createdAt: now,
+    updatedAt: now
+  }).then(function() {
+    var fmtDate = function(v) {
+      var dt = new Date(v);
+      if (isNaN(dt.getTime())) return v;
+      var pad = function(n) { return String(n).padStart(2, '0'); };
+      return dt.getFullYear() + '-' + pad(dt.getMonth() + 1) + '-' + pad(dt.getDate()) + ' ' + pad(dt.getHours()) + ':' + pad(dt.getMinutes());
+    };
+    document.getElementById('resultSummary').innerHTML =
+      '👤 <b>' + esc(name) + '</b><br>' +
+      '✂️ <b>' + esc(serviceName) + '</b><br>' +
+      '🕐 <b>' + esc(fmtDate(datetime)) + '</b>' + (staffName ? '<br>💇 <b>' + esc(staffName) + '</b>' : '') +
+      (phone ? '<br>📱 <b>' + esc(phone) + '</b>' : '');
+    document.getElementById('formCard').style.display = 'none';
+    document.getElementById('resultCard').style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = '提交预约';
+  }).catch(function(e) {
+    btn.disabled = false;
+    btn.textContent = '提交预约';
+    errEl.textContent = '⚠️ 提交失败，请检查网络后重试。（' + (e && e.message ? e.message : '未知错误') + '）';
+    errEl.style.display = 'block';
+  });
+});
+
+loadShopData();
+setMinDatetime();
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+﻿{
+  "rules": {
+    "salon_data": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "SERVICES": { ".read": true },
+      "STAFF": { ".read": true },
+      "SETTINGS": { ".read": true }
+    },
+    "bookings": {
+      ".read": "auth != null",
+      ".write": true
+    }
+  }
+}
