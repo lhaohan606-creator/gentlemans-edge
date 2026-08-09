@@ -1855,16 +1855,52 @@ function renderMembers() {
             { name: '长发烫染(399)', price: 399, category: '烫染套餐' }
         ];
 
+        // 修复服务编号：出现重复编号时按顺序重新编号
+        function repairServiceIds() {
+            try {
+                var services = DataStore.get('SERVICES');
+                var seen = {};
+                var dup = false;
+                services.forEach(function(s) {
+                    var k = String(s.id);
+                    if (seen[k]) dup = true;
+                    seen[k] = true;
+                });
+                if (!dup) return;
+                var fixed = services.map(function(s, i) { var c = cloneData(s); c.id = i + 1; return c; });
+                DataStore.set('SERVICES', fixed);
+                if (typeof renderServices === 'function') renderServices();
+            } catch (e) { console.warn('服务编号修复失败', e); }
+        }
+
+        // 一次性清理旧的测试服务项目（剪发/洗头/焗黑）
+        function removeLegacyServices() {
+            try {
+                try { if (localStorage.getItem('salon_legacy_services_cleaned_v1')) return; } catch (e0) {}
+                var removeNames = { '剪发': true, '洗头': true, '焗黑': true };
+                var services = DataStore.get('SERVICES');
+                var filtered = services.filter(function(s) { return !removeNames[String(s.name || '').trim()]; });
+                if (filtered.length !== services.length) {
+                    DataStore.set('SERVICES', filtered);
+                    if (typeof renderServices === 'function') renderServices();
+                }
+                try { localStorage.setItem('salon_legacy_services_cleaned_v1', '1'); } catch (e2) {}
+            } catch (e) { console.warn('旧服务清理失败', e); }
+        }
+
         function seedDefaultServices() {
             try {
                 var services = DataStore.get('SERVICES');
                 var names = {};
                 services.forEach(function(s) { names[String(s.name || '').trim()] = true; });
+                var maxId = 0;
+                services.forEach(function(s) { var n = parseInt(s.id, 10); if (n > maxId) maxId = n; });
                 var added = false;
                 DEFAULT_SERVICES.forEach(function(svc) {
                     if (names[svc.name]) return;
+                    maxId += 1;
                     services.push({
-                        id: DataStore.generateId('SERVICES'),
+                        id: maxId,
                         name: svc.name,
                         price: svc.price,
                         cost: 0,
@@ -2045,6 +2081,8 @@ function renderMembers() {
                     document.getElementById('mainApp').style.display = 'block';
                     RoleManager.load();
                     DataStore.init();
+                    repairServiceIds();
+                    removeLegacyServices();
                     seedDefaultServices();
                     applyRoleToUI();
                     renderDashboard();
