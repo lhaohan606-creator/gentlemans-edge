@@ -1831,6 +1831,56 @@ function renderMembers() {
             if (typeof renderManagerPanel === 'function') renderManagerPanel();
         }
 
+
+        // ==================== 默认价目表（自动合并到服务项目） ====================
+        var DEFAULT_SERVICES = [
+            { name: '洗吹', price: 15, category: '剪发造型' },
+            { name: '剪发（单次）', price: 20, category: '剪发造型' },
+            { name: '剪发卡', price: 100, category: '剪发造型' },
+            { name: '烫发(128)', price: 128, category: '烫发' },
+            { name: '烫发(168)', price: 168, category: '烫发' },
+            { name: '烫发(268)', price: 268, category: '烫发' },
+            { name: '烫发(328)', price: 328, category: '烫发' },
+            { name: '染发(98)', price: 98, category: '染发' },
+            { name: '染发(138)', price: 138, category: '染发' },
+            { name: '染发(188)', price: 188, category: '染发' },
+            { name: '染发(268)', price: 268, category: '染发' },
+            { name: '蛋白(168)', price: 168, category: '蛋白矫正' },
+            { name: '蛋白(208)', price: 208, category: '蛋白矫正' },
+            { name: '矫正(208)', price: 208, category: '蛋白矫正' },
+            { name: '矫正(288)', price: 288, category: '蛋白矫正' },
+            { name: '短发烫染(199)', price: 199, category: '烫染套餐' },
+            { name: '短发烫染(299)', price: 299, category: '烫染套餐' },
+            { name: '长发烫染(299)', price: 299, category: '烫染套餐' },
+            { name: '长发烫染(399)', price: 399, category: '烫染套餐' }
+        ];
+
+        function seedDefaultServices() {
+            try {
+                var services = DataStore.get('SERVICES');
+                var names = {};
+                services.forEach(function(s) { names[String(s.name || '').trim()] = true; });
+                var added = false;
+                DEFAULT_SERVICES.forEach(function(svc) {
+                    if (names[svc.name]) return;
+                    services.push({
+                        id: DataStore.generateId('SERVICES'),
+                        name: svc.name,
+                        price: svc.price,
+                        cost: 0,
+                        category: svc.category
+                    });
+                    names[svc.name] = true;
+                    added = true;
+                });
+                if (added) {
+                    DataStore.set('SERVICES', services);
+                    if (typeof renderServices === 'function') renderServices();
+                    if (typeof renderDashboard === 'function') renderDashboard();
+                }
+            } catch (e) { console.warn('价目表初始化失败', e); }
+        }
+
         // ==================== 全局API ====================
         window.SalonApp = {
             _initialized: true,
@@ -1995,6 +2045,7 @@ function renderMembers() {
                     document.getElementById('mainApp').style.display = 'block';
                     RoleManager.load();
                     DataStore.init();
+                    seedDefaultServices();
                     applyRoleToUI();
                     renderDashboard();
                     renderManagerPanel();
