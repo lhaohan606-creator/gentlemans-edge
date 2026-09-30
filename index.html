@@ -1272,9 +1272,6 @@ function renderMembers() {
             var members = DataStore.get('MEMBERS');
             var services = DataStore.get('SERVICES');
             var staff = DataStore.get('STAFF');
-            var memberOptions = '<option value="">散客</option>' + members.map(function(member) {
-                return '<option value="' + member.id + '">' + escapeHTML(member.name) + ' · 余额 ' + formatMoney(member.balance) + '</option>';
-            }).join('');
             var serviceOptions = services.length ? '<option value="">请选择服务</option>' + services.map(function(service) {
                 return '<option value="' + service.id + '">' + escapeHTML(service.name) + ' · ' + formatMoney(service.price) + '</option>';
             }).join('') : '<option value="">请先添加服务项目</option>';
@@ -1285,7 +1282,8 @@ function renderMembers() {
             openModal(
                 '<div class="modal-header"><h3>快速收银</h3><button type="button" class="modal-close">×</button></div>' +
                 '<form id="consumptionForm">' +
-                    '<div class="form-group"><label>顾客</label><select id="cMember">' + memberOptions + '</select></div>' +
+                    '<div class="form-group"><label for="cMemberSearch">搜索会员</label><input type="search" id="cMemberSearch" placeholder="输入姓名、手机号或卡号" autocomplete="off" aria-controls="cMember" aria-describedby="cMemberResults"></div>' +
+                    '<div class="form-group"><label for="cMember">顾客</label><select id="cMember" aria-describedby="cMemberResults"></select><small class="hint" id="cMemberResults" role="status" aria-live="polite"></small></div>' +
                     '<div class="form-group"><label>服务项目 *</label><select id="cService">' + serviceOptions + '</select></div>' +
                     '<div class="form-group"><label>服务人员</label><select id="cStaff">' + staffOptions + '</select></div>' +
                     '<div class="form-group"><label>支付方式</label><select id="cPayment"><option value="微信">微信</option><option value="支付宝">支付宝</option><option value="现金">现金</option><option value="会员余额">会员余额</option></select></div>' +
@@ -1299,8 +1297,24 @@ function renderMembers() {
             );
 
             var memberSelect = document.getElementById('cMember');
+            var memberSearch = document.getElementById('cMemberSearch');
+            var memberResults = document.getElementById('cMemberResults');
             var serviceSelect = document.getElementById('cService');
             var staffSelect = document.getElementById('cStaff');
+            var matchedMembers = members;
+            function updateMemberOptions() {
+                var query = memberSearch.value.trim().toLowerCase();
+                matchedMembers = query ? members.filter(function(member) {
+                    return [member.name, member.phone, member.cardNo].join(' ').toLowerCase().indexOf(query) !== -1;
+                }) : members;
+                memberSelect.innerHTML = '<option value="">散客</option>' + matchedMembers.map(function(member) {
+                    return '<option value="' + escapeHTML(member.id) + '">' + escapeHTML(member.name) +
+                        ' · ' + escapeHTML(member.phone || '未留电话') + ' · ' + escapeHTML(member.cardNo || '无卡号') +
+                        ' · 余额 ' + formatMoney(member.balance) + '</option>';
+                }).join('') + (query && !matchedMembers.length ? '<option value="" disabled>无匹配会员</option>' : '');
+                memberResults.textContent = query ? '找到 ' + matchedMembers.length + ' 位会员' : '共 ' + members.length + ' 位会员';
+            }
+            updateMemberOptions();
             if (preset.memberId) memberSelect.value = String(preset.memberId);
             if (preset.serviceId) serviceSelect.value = String(preset.serviceId);
             if (preset.staffId) staffSelect.value = String(preset.staffId);
@@ -1316,9 +1330,25 @@ function renderMembers() {
                 if (member) summary += ' · 余额 ' + formatMoney(member.balance);
                 document.getElementById('checkoutSummary').textContent = summary;
             }
+            memberSearch.addEventListener('input', function() {
+                updateMemberOptions();
+                memberSelect.value = '';
+                updateCheckoutSummary();
+            });
+            memberSearch.addEventListener('keydown', function(event) {
+                if (event.key !== 'Enter' || event.isComposing || event.keyCode === 229) return;
+                event.preventDefault();
+                if (memberSearch.value.trim() && matchedMembers.length === 1) {
+                    memberSelect.value = String(matchedMembers[0].id);
+                    updateCheckoutSummary();
+                    memberSelect.focus();
+                }
+            });
             memberSelect.addEventListener('change', updateCheckoutSummary);
             serviceSelect.addEventListener('change', updateCheckoutSummary);
+            document.getElementById('consumptionForm').addEventListener('submit', function(event) { event.preventDefault(); });
             updateCheckoutSummary();
+            memberSearch.focus();
 
             document.getElementById('consumptionSaveBtn').addEventListener('click', function() {
                 var memberId = memberSelect.value;
@@ -1329,6 +1359,8 @@ function renderMembers() {
                 var memberObj = memberId ? members.find(function(member) { return String(member.id) === String(memberId); }) : null;
                 var service = serviceId ? services.find(function(item) { return String(item.id) === String(serviceId); }) : null;
                 var staffMember = staffId ? staff.find(function(item) { return String(item.id) === String(staffId); }) : null;
+                if (memberSearch.value.trim() && !memberId) { showToast('请选择会员，或清空搜索以使用散客收银', 'error'); return; }
+                if (memberId && !memberObj) { showToast('所选会员无效，请重新选择', 'error'); return; }
                 if (!service) { showToast('请先选择服务项目', 'error'); return; }
                 if (amount <= 0) { showToast('实收金额必须大于 0', 'error'); return; }
                 if (paymentMethod === '会员余额' && !memberObj) { showToast('会员余额支付需要先选择会员', 'error'); return; }
